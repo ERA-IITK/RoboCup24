@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<robot name="arena" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<material name="silver_default">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+<material name="powder_coat_rough_green">
+  <color rgba="0.26666666666666666 0.5882352941176471 0.2823529411764706 0.0"/>
+</material>
+<material name="powder_coat_rough_white">
+  <color rgba="0.9647058823529412 0.9647058823529412 0.9529411764705882 0.0"/>
+</material>
+
+</robot>

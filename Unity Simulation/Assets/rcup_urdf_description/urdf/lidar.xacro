@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<robot name="rcup_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<joint name="laser_joint" type="fixed">
+  <origin xyz="0.0 -0.11115 0.467009" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="kinect_1"/>
+</joint>
+
+<link name="kinect_1">
+  <inertial>
+    <origin xyz="8.07978825644895e-05 0.03307821422428597 -0.01854148491227281" rpy="0 0 0"/>
+    <mass value="5.665239174580644"/>
+    <inertia ixx="0.002961" iyy="0.029846" izz="0.031012" ixy="1.5e-05" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.11115 -0.467009" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_description/meshes/kinect_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="opaque272727"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.11115 -0.467009" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_description/meshes/kinect_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<gazebo reference="kinect_1">
+        <material>Gazebo/Orange</material>
+
+        <sensor name="laser" type="ray">
+            <pose> 0 0 0 0 0 0 </pose>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>360</samples>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.3</min>
+                    <max>12</max>
+                </range>
+            </ray>
+            <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <argument>~/out:=scan</argument>
+                </ros>
+                <output_type>sensor_msgs/LaserScan</output_type>
+                <frame_name>kinect_1</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <joint name = "camera_joint" type ="fixed">
+        <parent link ="kinect_1"/>
+        <child link ="camera_link"/>
+        <origin xyz = "0 0 0.1" rpy= "0 0 0"/>
+    </joint>
+
+    <link name="camera_link">
+        <inertial>
+            <origin xyz="0.014151805869357915 0.032943270937617994 0.018026687074977843" rpy="0 0 0"/>
+            <mass value="5.688103261975597"/>
+            <inertia ixx="0.00299" iyy="0.029925" izz="0.031113" ixy="2.9e-05" iyz="-1e-06" ixz="0.0"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.014 0.11115 -0.430009" rpy="0 0 0"/>
+            <geometry>
+               <mesh filename="package://rcup_urdf_description/meshes/kinect_1.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="opaque272727"/>
+        </visual>
+        <collision>
+            <origin xyz="0.014 0.11115 -0.430009" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://rcup_urdf_description/meshes/kinect_1.stl" scale="0.0005 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name = "camera_optical_joint" type ="fixed">
+        <parent link ="camera_link"/>
+        <child link ="camera_link_optical"/>
+        <origin xyz = "0 0 0" rpy= "-0.707 0 -0.707"/>
+    </joint>
+
+    <link name="camera_link_optical"></link>
+
+
+    <gazebo reference="camera_link">
+        <material>Gazebo/Orange</material>
+
+        <sensor name="camera" type="camera">
+            <pose> 0 0 0 0 0 0 </pose>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <camera>
+                <horizontal_fov>1.089</horizontal_fov>
+                <image>
+                    <format>R8G8B8</format>
+                    <width>640</width>
+                    <height>480</height>
+                </image>
+                <clip>
+                    <near>0.05</near>
+                    <far>8.0</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <frame_name>camera_link_optical</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+</robot>

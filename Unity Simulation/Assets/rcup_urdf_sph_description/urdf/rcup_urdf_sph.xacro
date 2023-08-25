@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+<robot name="rcup_urdf_sph" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find rcup_urdf_sph_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find rcup_urdf_sph_description)/urdf/rcup_urdf_sph.trans" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.0019404383294111213 0.010953637895530069 0.15773361972906869" rpy="0 0 0"/>
+    <mass value="38.737058812916764"/>
+    <inertia ixx="1.973285" iyy="2.130912" izz="1.568855" ixy="-0.008577" iyz="0.075018" ixz="-0.007662"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver_default"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Component419_1">
+  <inertial>
+    <origin xyz="-0.010694649902391953 0.00803962610329817 0.006781847703606597" rpy="0 0 0"/>
+    <mass value="0.4122786652131398"/>
+    <inertia ixx="0.000106" iyy="9.9e-05" izz="9.6e-05" ixy="-1e-05" iyz="8e-06" ixz="-9e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.095008 0.214003 -0.17631" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/Component419_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.095008 0.214003 -0.17631" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/Component419_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="small_roller_v1_1">
+  <inertial>
+    <origin xyz="0.01070386879259716 0.008003421622574586 0.006810021314246767" rpy="0 0 0"/>
+    <mass value="0.41227866521313966"/>
+    <inertia ixx="0.000106" iyy="9.9e-05" izz="9.6e-05" ixy="1.1e-05" iyz="8e-06" ixz="9e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.095008 0.214003 -0.17631" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/small_roller_v1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.095008 0.214003 -0.17631" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/small_roller_v1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="ROD2_1.PRT_1_1">
+  <inertial>
+    <origin xyz="-0.025188832166870404 -0.013717609182182885 -0.08108173194304436" rpy="0 0 0"/>
+    <mass value="0.8809905481847384"/>
+    <inertia ixx="0.009181" iyy="0.008966" izz="0.000535" ixy="5e-06" iyz="0.000274" ixz="1.1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.025 0.100117 -0.245868" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/ROD2_1.PRT_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="opaque272727"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.025 0.100117 -0.245868" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/ROD2_1.PRT_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="kinect_1">
+  <inertial>
+    <origin xyz="8.07978825644895e-05 0.03307821422428597 -0.01854148491227281" rpy="0 0 0"/>
+    <mass value="5.665239174580644"/>
+    <inertia ixx="0.002961" iyy="0.029846" izz="0.031012" ixy="1.5e-05" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.11115 -0.467009" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/kinect_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="opaque272727"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.11115 -0.467009" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/kinect_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="front_left_1">
+  <inertial>
+    <origin xyz="-1.0547118733938987e-15 4.29820168609818e-07 -4.163336339193311e-19" rpy="0 0 0"/>
+    <mass value="9.03022010341728"/>
+    <inertia ixx="0.015261" iyy="0.015261" izz="0.015261" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.17 0.078381 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/front_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.17 0.078381 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/front_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="front_right_1">
+  <inertial>
+    <origin xyz="0.0 4.2982016797143974e-07 0.0" rpy="0 0 0"/>
+    <mass value="9.03022010341728"/>
+    <inertia ixx="0.015261" iyy="0.015261" izz="0.015261" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.17 0.078381 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/front_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.17 0.078381 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/front_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rear_left_1">
+  <inertial>
+    <origin xyz="1.1657341758564144e-15 4.2982016820736213e-07 0.0" rpy="0 0 0"/>
+    <mass value="9.03022010341728"/>
+    <inertia ixx="0.015261" iyy="0.015261" izz="0.015261" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.17 -0.167619 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/rear_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.17 -0.167619 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/rear_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rear_right_1">
+  <inertial>
+    <origin xyz="-5.551115123125783e-17 4.2982016820736213e-07 0.0" rpy="0 0 0"/>
+    <mass value="9.03022010341728"/>
+    <inertia ixx="0.015261" iyy="0.015261" izz="0.015261" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.17 -0.167619 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/rear_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.17 -0.167619 -0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rcup_urdf_sph_description/meshes/rear_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Revolute 5" type="continuous">
+  <origin xyz="0.095008 -0.214003 0.17631" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Component419_1"/>
+  <axis xyz="0.713077 -0.534564 -0.453611"/>
+</joint>
+
+<joint name="Revolute 6" type="continuous">
+  <origin xyz="-0.095008 -0.214003 0.17631" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="small_roller_v1_1"/>
+  <axis xyz="-0.713077 -0.534564 -0.453611"/>
+</joint>
+
+<joint name="Revolute 7" type="continuous">
+  <origin xyz="0.025 -0.100117 0.245868" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="ROD2_1.PRT_1_1"/>
+  <axis xyz="1.0 -0.0 0.0"/>
+</joint>
+
+<joint name="Rigid 11" type="fixed">
+  <origin xyz="0.0 -0.11115 0.467009" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="kinect_1"/>
+</joint>
+
+<joint name="Revolute 12" type="continuous">
+  <origin xyz="0.17 -0.078381 0.0" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="front_left_1"/>
+  <axis xyz="1.0 -0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 13" type="continuous">
+  <origin xyz="-0.17 -0.078381 0.0" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="front_right_1"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="Revolute 14" type="continuous">
+  <origin xyz="0.17 0.167619 0.0" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="rear_left_1"/>
+  <axis xyz="1.0 -0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 15" type="continuous">
+  <origin xyz="-0.17 0.167619 0.0" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="rear_right_1"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
+</joint>
+
+</robot>
