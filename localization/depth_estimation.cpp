@@ -2,13 +2,15 @@
 
 int main() {
     // Fisheye camera parameters (you'll need to calibrate your camera for accurate results)
-    cv::Mat K = (cv::Mat_<double>(3, 3) << 124.47175225,0.,224.71804041,0.,123.73205159,201.10938475,0.,0.,1.);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << 3.3653753268250244e+02, 0., 7.8648310706841721e+02, 0.,
+       3.3483120592273684e+02, 5.9344169001906948e+02, 0., 0., 1.);
 
     // Fisheye distortion coefficients (also from calibration)
-    cv::Mat dist_coeffs = (cv::Mat_<double>(4, 1) << 12.6, 7.8, 4.3, 9.8);
+    cv::Mat dist_coeffs = (cv::Mat_<double>(4, 1) << 9.9151573622450404e-02, -3.6377486279912392e-02,
+       3.4318237455812539e-03, -7.8032068549697086e-04);
 
     // Image point coordinates (replace these with your actual image coordinates)
-    int x=50, y=50;
+    int x=610, y=457;
     cv::Point2d image_point(x, y);
 
     // Undistort the image point using the equidistant fisheye model

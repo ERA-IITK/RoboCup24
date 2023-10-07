@@ -5,8 +5,8 @@ import cv2
 import glob
 
 # Define the chess board rows and columns
-rows = 6
-cols = 9
+rows = 4
+cols = 7
 
 # Set the termination criteria for the corner sub-pixel algorithm
 criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 0.001)
