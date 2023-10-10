@@ -10,8 +10,8 @@ vector<Point> rndgen(int num_points) {
     random_device rd;
     mt19937 gen(rd());
 
-    uniform_real_distribution<double> x_dist(0.0, 14.0);
-    uniform_real_distribution<double> y_dist(0.0, 22.0);
+    uniform_real_distribution<double> x_dist(0.0, 16.0);
+    uniform_real_distribution<double> y_dist(0.0, 24.0);
     uniform_real_distribution<double> theta_dist(0.0, 360.0);
 
     vector<Point> random_points;
@@ -26,7 +26,7 @@ vector<Point> rndgen(int num_points) {
 
     return random_points;
 }
-
+// Uncomment to test the code
 int main() {
     // Call the rndgen function to generate random points
     vector<Point> points = rndgen(1000);
@@ -35,6 +35,5 @@ int main() {
     for (const auto& point : points) {
         cout << "(" << point.x << ", " << point.y << ", " << point.theta << ")\n";
     }
-
     return 0;
 }

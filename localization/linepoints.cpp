@@ -1,12 +1,11 @@
-#include <bits/stdc++.h>
-
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include "point.h" 
 using namespace std;
 
 //origin is at bottom left corner of field when field is viewed in landscape mode
-
-struct node{
-    float x,y,dir;
-};
 
 struct line{
     float a,b,c;
@@ -47,7 +46,7 @@ float randy(){
     return random_float_value;
 }
 
-int randir(){
+int rantheta(){
     int min_value = 0;   // Minimum value
     int max_value = 360; // Maximum value
     int random_integer = rand() % (max_value - min_value + 1) + min_value;
@@ -127,9 +126,9 @@ const limits Quad2 = {14.25,15,1,1.75};
 const limits Quad3 = {1,1.75,22.25,23};
 const limits Quad4 = {14.25,15,22.25,23};
 
-void solve_for_centreCircle(node p,int k,float thetha, vector<linepoint> temp){
+void solve_for_centreCircle(Point p,int k,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float dir = p.dir + k*90;
+    float theta = p.theta + k*90;
     float a = -16 , b = -24, c=24;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -150,9 +149,9 @@ void solve_for_centreCircle(node p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad1(node p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad1(Point p,int k,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float dir = p.dir + k*90;
+    float theta = p.theta + k*90;
     float a = -2 , b = -2, c=1.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -173,9 +172,9 @@ void solve_for_quad1(node p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad2(node p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad2(Point p,int k,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float dir = p.dir + k*90;
+    float theta = p.theta + k*90;
     float a = -30 , b = -2, c=225.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -196,9 +195,9 @@ void solve_for_quad2(node p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad3(node p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad3(Point p,int k,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float dir = p.dir + k*90;
+    float theta = p.theta + k*90;
     float a = -2 , b = -46, c=529.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -219,9 +218,9 @@ void solve_for_quad3(node p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad4(node p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad4(Point p,int k,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float dir = p.dir + k*90;
+    float theta = p.theta + k*90;
     float a = -30 , b = -46, c=753.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -243,11 +242,11 @@ void solve_for_quad4(node p,int k,float thetha, vector<linepoint> temp){
 }
 
 
-vector<linepoint> linepoints(node a,int k){
+vector<linepoint> linepoints(Point a,int k){
     float x=a.x,y=a.y;
-    float dir = a.dir + k*90;
+    float theta = a.theta + k*90;
     vector<linepoint> dists;
-    for(int thetha = dir-110; thetha<=dir+110; thetha+=1){
+    for(int thetha = theta-110; thetha<=theta+110; thetha+=1){
         float m = tan(thetha);
         float c1 = y - m*x;
         vector<linepoint> temp;
@@ -280,21 +279,21 @@ vector<linepoint> linepoints(node a,int k){
     }
     return dists;
 }
-
+//uncomment to test the code
 int main(){
 
     srand(static_cast<unsigned>(time(nullptr)));
 
-    node a;
+    Point a;
     a.x = randx();
     a.y = randy();
-    a.dir = randir();
+    a.theta = rantheta();
 
     vector<linepoint> lp_cam1 = linepoints(a,0);
     vector<linepoint> lp_cam2= linepoints(a,1);
     vector<linepoint> lp_cam3 = linepoints(a,2);
     vector<linepoint> lp_cam4 = linepoints(a,3);
-    cout << a.x <<' '<< a.y << ' '<<a.dir << endl;
+    cout << a.x <<' '<< a.y << ' '<<a.theta << endl;
     cout << '{'<< endl;
      for(int i=0;i<lp_cam1.size();i++){
          cout <<'['<< lp_cam1[i].x << ','<<lp_cam1[i].y<<','<<lp_cam1[i].d<<"],";
