@@ -145,7 +145,9 @@ void solve_for_centreCircle(Point p,int k,float thetha, vector<linepoint> temp){
         p2.y = m*x+c1;
         p2.d = distance(x,y,p2.x,p2.y);
         if(CompareByD(p2,p1))p1=p2;
-        if(Circle.xmin<=p1.x<=Circle.xmax && Circle.ymin<=p1.y<=Circle.ymax)temp.push_back(p1);
+        if (Circle.xmin <= p1.x && p1.x <= Circle.xmax && Circle.ymin <= p1.y && p1.y <= Circle.ymax)
+            temp.push_back(p1);
+
     }
 }
 
@@ -168,7 +170,9 @@ void solve_for_quad1(Point p,int k,float thetha, vector<linepoint> temp){
         p2.y = m*x+c1;
         p2.d = distance(x,y,p2.x,p2.y);
         if(CompareByD(p2,p1))p1=p2;
-        if(Quad1.xmin<=p1.x<=Quad1.xmax && Quad1.ymin<=p1.y<=Quad1.ymax)temp.push_back(p1);
+        if (Quad1.xmin <= p1.x && p1.x <= Quad1.xmax && Quad1.ymin <= p1.y && p1.y <= Quad1.ymax)
+            temp.push_back(p1);
+
     }
 }
 
@@ -191,7 +195,9 @@ void solve_for_quad2(Point p,int k,float thetha, vector<linepoint> temp){
         p2.y = m*x+c1;
         p2.d = distance(x,y,p2.x,p2.y);
         if(CompareByD(p2,p1))p1=p2;
-        if(Quad2.xmin<=p1.x<=Quad2.xmax && Quad2.ymin<=p1.y<=Quad2.ymax)temp.push_back(p1);
+        if (Quad2.xmin <= p1.x && p1.x <= Quad2.xmax && Quad2.ymin <= p1.y && p1.y <= Quad2.ymax)
+            temp.push_back(p1);
+
     }
 }
 
@@ -214,7 +220,9 @@ void solve_for_quad3(Point p,int k,float thetha, vector<linepoint> temp){
         p2.y = m*x+c1;
         p2.d = distance(x,y,p2.x,p2.y);
         if(CompareByD(p2,p1))p1=p2;
-        if(Quad3.xmin<=p1.x<=Quad3.xmax && Quad3.ymin<=p1.y<=Quad3.ymax)temp.push_back(p1);
+        if (Quad3.xmin <= p1.x && p1.x <= Quad3.xmax && Quad3.ymin <= p1.y && p1.y <= Quad3.ymax)
+            temp.push_back(p1);
+
     }
 }
 
@@ -237,7 +245,9 @@ void solve_for_quad4(Point p,int k,float thetha, vector<linepoint> temp){
         p2.y = m*x+c1;
         p2.d = distance(x,y,p2.x,p2.y);
         if(CompareByD(p2,p1))p1=p2;
-        if(Quad4.xmin<=p1.x<=Quad4.xmax && Quad4.ymin<=p1.y<=Quad4.ymax)temp.push_back(p1);
+        if (Quad4.xmin <= p1.x && p1.x <= Quad4.xmax && Quad4.ymin <= p1.y && p1.y <= Quad4.ymax)
+            temp.push_back(p1);
+
     }
 }
 
@@ -250,7 +260,7 @@ vector<linepoint> linepoints(Point a,int k){
         float m = tan(thetha);
         float c1 = y - m*x;
         vector<linepoint> temp;
-        for(int i=0;i<lines.size();i++){
+        for(size_t i=0;i<lines.size();i++){
             float a = lines[i].a;
             float b = lines[i].b;
             float c = lines[i].c;
@@ -259,13 +269,21 @@ vector<linepoint> linepoints(Point a,int k){
                 p.x = (c-b*c1)/(a+m*b);
                 p.y = (m*c+a*c1)/(a+m*b);
                 p.d = distance(x,y,p.x,p.y);
-                if(Lim[i].xmin<=p.x<=Lim[i].xmax && Lim[i].ymin<=p.y<=Lim[i].ymax)temp.push_back(p);
-                if(i==7)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 23<=p.y<=23.75)temp.push_back(p);
-                if(i==8)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 23<=p.y<=23.75)temp.push_back(p);
-                if(i==11)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 22.25<=p.y<=23)temp.push_back(p);
-                if(i==12)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 22.25<=p.y<=23)temp.push_back(p);
-                if(i==15)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 20.75<=p.y<=23)temp.push_back(p);
-                if(i==16)if(Lim[i].xmin<=p.x<=Lim[i].xmax && 20.75<=p.y<=23)temp.push_back(p);
+                if(Lim[i].xmin<=p.x && p.x<=Lim[i].xmax && Lim[i].ymin<=p.y && p.y<=Lim[i].ymax)
+                    temp.push_back(p);
+                if (i == 7 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 23 <= p.y && p.y <= 23.75)
+                    temp.push_back(p);
+                if (i == 8 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 23 <= p.y && p.y <= 23.75)
+                    temp.push_back(p);
+                if (i == 11 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 22.25 <= p.y && p.y <= 23)
+                    temp.push_back(p);
+                if (i == 12 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 22.25 <= p.y && p.y <= 23)
+                    temp.push_back(p);
+                if (i == 15 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 20.75 <= p.y && p.y <= 23)
+                    temp.push_back(p);
+                if (i == 16 && Lim[i].xmin <= p.x && p.x <= Lim[i].xmax && 20.75 <= p.y && p.y <= 23)
+                    temp.push_back(p);
+
             }
             else continue;
         }
@@ -295,7 +313,7 @@ int main(){
     vector<linepoint> lp_cam4 = linepoints(a,3);
     cout << a.x <<' '<< a.y << ' '<<a.theta << endl;
     cout << '{'<< endl;
-     for(int i=0;i<lp_cam1.size();i++){
+     for(size_t i=0;i<lp_cam1.size();i++){
          cout <<'['<< lp_cam1[i].x << ','<<lp_cam1[i].y<<','<<lp_cam1[i].d<<"],";
      }
      cout << '}' << endl;

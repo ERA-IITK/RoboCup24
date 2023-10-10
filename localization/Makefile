@@ -16,7 +16,7 @@ $(BUILD_DIR)/%: %.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@ $(CFLAGS) $(LIBS)
 
 # Rule to build testMain from testMain.cpp and its dependencies
-$(BUILD_DIR)/hungarian: hungarian-algorithm-cpp/Hungarian.cpp hungarian-algorithm-cpp/Hungarian.h hungarian.cpp
+$(BUILD_DIR)/hungarian: module_hungarian/Hungarian.cpp module_hungarian/Hungarian.h hungarian.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(CFLAGS) $(LIBS)
 
 clean:
