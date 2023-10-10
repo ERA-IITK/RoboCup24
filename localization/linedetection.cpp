@@ -3,7 +3,7 @@
 
 int main() {
     // Load the image
-    cv::Mat image = cv::imread("fisheye_field2.jpg");
+    cv::Mat image = cv::imread("./images/fisheye_field2.jpg");
 
     if (image.empty()) {
         std::cerr << "Error: Unable to load image." << std::endl;
@@ -38,7 +38,7 @@ int main() {
     // Display the result image
     cv::imshow("All Contours Detection", resultImage);
     cv::waitKey(0);
-    cv::imwrite("fisheye_field2Contour.jpg", resultImage);
+    cv::imwrite("./images/fisheye_field2Contour.jpg", resultImage);
     cv::destroyAllWindows();
 
     // Print the number of contours detected
