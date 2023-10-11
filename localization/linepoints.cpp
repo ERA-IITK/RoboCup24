@@ -29,8 +29,8 @@ float distance(int x1,int y1,int x2,int y2){
 }
 
 float randx(){
-    float minv = 0;
-    float maxv = 16;
+    float minv = 1;
+    float maxv = 15;
     int num = static_cast<int>((minv-maxv)*10) +1;
     int random_index = rand() % num;
     float random_float_value = minv + random_index * 0.1;
@@ -38,8 +38,8 @@ float randx(){
 }
 
 float randy(){
-    float minv = 0;
-    float maxv = 24;
+    float minv = 1;
+    float maxv = 23;
     int num = static_cast<int>((minv-maxv)*10) +1;
     int random_index = rand() % num;
     float random_float_value = minv + random_index * 0.1;

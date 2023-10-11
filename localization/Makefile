@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -Wall
 
 # List of source files and their corresponding targets
 BUILD_DIR = build
-SOURCES = linedetection.cpp depth_estimation.cpp heatmap.cpp rndgeneration.cpp
+SOURCES = linedetection.cpp depth_estimation.cpp heatmap.cpp rndgeneration.cpp linepoints.cpp costmatrix.cpp
 TARGETS = $(addprefix $(BUILD_DIR)/,$(SOURCES:.cpp=))
 LIBS = `pkg-config --libs opencv4`
 CFLAGS = `pkg-config --cflags opencv4`
