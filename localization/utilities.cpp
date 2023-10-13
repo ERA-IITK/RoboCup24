@@ -33,4 +33,20 @@ void addscore(vector<Point> p){
     p[ind].score++;
 }
 
+void inc_age(vector<Point> p){
+    for(auto pt: p){
+        pt.age++;
+    }
+}
+
+void del_nodes(vector<Point>& p, int threshold=10) { // threshold to be determined experimentally
+    auto it = p.begin();
+    while (it != p.end()) {
+        if (it->age - it->score >= threshold) {
+            it = p.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
 
