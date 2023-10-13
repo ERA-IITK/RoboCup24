@@ -98,6 +98,4 @@ void gradient_descent(vector<point> &p) {
         cout << param << " ";
     }
     cout << endl;
-
-    return 0;
 }
