@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "point.h"
+#include "point.hpp"
 
 using namespace std;
 
