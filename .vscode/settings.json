@@ -2,5 +2,6 @@
     "files.associations": {
         "*.ipp": "cpp",
         "vector": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/noble_pegasus/RoboCup24/Unity Simulation/Assets/3w_rcup_urdf_new_description"
 }
