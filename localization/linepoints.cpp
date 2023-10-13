@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
-#include "point.h" 
+#include "point.hpp" 
 using namespace std;
 
 //origin is at bottom left corner of field when field is viewed in landscape mode
@@ -21,10 +21,11 @@ struct limits{
 };
 
 bool CompareByD(const linepoint &a, const linepoint &b){
+    cout<<a.d<<" "<<b.d<<endl;
     return a.d < b.d;
 }
 
-float distance(int x1,int y1,int x2,int y2){
+float distance(float x1,float y1,float x2,float y2){
     return sqrt(pow(x1-x2,2)+pow(y1-y2,2));
 }
 
@@ -126,9 +127,8 @@ const limits Quad2 = {14.25,15,1,1.75};
 const limits Quad3 = {1,1.75,22.25,23};
 const limits Quad4 = {14.25,15,22.25,23};
 
-void solve_for_centreCircle(Point p,int k,float thetha, vector<linepoint> temp){
+void solve_for_centreCircle(Point p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float theta = p.theta + k*90;
     float a = -16 , b = -24, c=24;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -151,9 +151,8 @@ void solve_for_centreCircle(Point p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad1(Point p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad1(Point p, float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float theta = p.theta + k*90;
     float a = -2 , b = -2, c=1.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -176,9 +175,8 @@ void solve_for_quad1(Point p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad2(Point p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad2(Point p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float theta = p.theta + k*90;
     float a = -30 , b = -2, c=225.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -201,9 +199,8 @@ void solve_for_quad2(Point p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad3(Point p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad3(Point p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float theta = p.theta + k*90;
     float a = -2 , b = -46, c=529.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -226,9 +223,8 @@ void solve_for_quad3(Point p,int k,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad4(Point p,int k,float thetha, vector<linepoint> temp){
+void solve_for_quad4(Point p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
-    float theta = p.theta + k*90;
     float a = -30 , b = -46, c=753.4375;
     float m = tan(thetha);
     float c1 = y - m*x;
@@ -252,11 +248,10 @@ void solve_for_quad4(Point p,int k,float thetha, vector<linepoint> temp){
 }
 
 
-vector<linepoint> linepoints(Point a,int k){
+vector<linepoint> linepoints(Point a){
     float x=a.x,y=a.y;
-    float theta = a.theta + k*90;
     vector<linepoint> dists;
-    for(int thetha = theta-110; thetha<=theta+110; thetha+=1){
+    for(float thetha =0; thetha<360; thetha+=0.5){
         float m = tan(thetha);
         float c1 = y - m*x;
         vector<linepoint> temp;
@@ -287,19 +282,26 @@ vector<linepoint> linepoints(Point a,int k){
             }
             else continue;
         }
-        solve_for_centreCircle(a,k,thetha,temp);
-        solve_for_quad1(a,k,thetha,temp); //bottomleft
-        solve_for_quad2(a,k,thetha,temp); //bottomright
-        solve_for_quad3(a,k,thetha,temp); //topleft
-        solve_for_quad4(a,k,thetha,temp); //topright
+        solve_for_centreCircle(a,thetha,temp);
+        solve_for_quad1(a,thetha,temp); //bottomleft
+        solve_for_quad2(a,thetha,temp); //bottomright
+        solve_for_quad3(a,thetha,temp); //topleft
+        solve_for_quad4(a,thetha,temp); //topright
         sort(temp.begin(),temp.end(),CompareByD);
         dists.push_back(temp[0]);
     }
     return dists;
 }
 //uncomment to test the code
-int main(){
+linepoint findNearestPoint(Point a) {
+    vector<linepoint> all_points = linepoints(a);
 
+    sort(all_points.begin(), all_points.end(), CompareByD);
+
+    return all_points[0];
+}
+
+int main() {
     srand(static_cast<unsigned>(time(nullptr)));
 
     Point a;
@@ -307,14 +309,10 @@ int main(){
     a.y = randy();
     a.theta = rantheta();
 
-    vector<linepoint> lp_cam1 = linepoints(a,0);
-    vector<linepoint> lp_cam2= linepoints(a,1);
-    vector<linepoint> lp_cam3 = linepoints(a,2);
-    vector<linepoint> lp_cam4 = linepoints(a,3);
-    cout << a.x <<' '<< a.y << ' '<<a.theta << endl;
-    cout << '{'<< endl;
-     for(size_t i=0;i<lp_cam1.size();i++){
-         cout <<'['<< lp_cam1[i].x << ','<<lp_cam1[i].y<<','<<lp_cam1[i].d<<"],";
-     }
-     cout << '}' << endl;
+    linepoint nearestPoint = findNearestPoint(a);
+
+    cout << "Given Point: {" << a.x << ", " << a.y << ", " << a.theta << "}" << endl;
+    cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
+
+    return 0;
 }
