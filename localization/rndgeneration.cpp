@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
-#include "point.h"  // Include the header file containing the Point struct
+#include "point.hpp"  // Include the header file containing the Point struct
 
 using namespace std;
 

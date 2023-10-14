@@ -2,9 +2,9 @@
 ## Getting started 
 In order to run the code, type the following commands in the terminal:
 ```
-make
+make build/<file_name>
 ```
 Then, to run the code, type:
 ```
-./localization
+./build/<file_name>
 ```
