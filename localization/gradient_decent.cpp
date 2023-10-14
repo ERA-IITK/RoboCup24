@@ -12,7 +12,7 @@ struct lp{
 
 
 // Define your cost function (simplified)
-double costFunction(const vector<lp>& estimatedLinePoints, const vector<lp>& givenLinePoints) {
+double costFunction(const vector<WPoint>& estimatedLinePoints, const vector<WPoint>& givenLinePoints) {
     double cost = 0;
     for (int i = 0; i < estimatedLinePoints.size(); ++i) {
         cost += pow(estimatedLinePoints[i].x - givenLinePoints[i].x, 2)+ pow(estimatedLinePoints[i].y - givenLinePoints[i].y, 2);
@@ -38,7 +38,7 @@ void gradientDescentRPROP(vector<double>& parameters, vector<double>& gradients)
 }
 
 // Placeholder for the computeGradients function
-vector<double> computeGradients(const vector<double>& parameters, const vector<lp>& givenLinePoints, const vector<lp>& estimatedLinePoints) {
+vector<double> computeGradients(const vector<double>& parameters, const vector<WPoint>& givenLinePoints, const vector<WPoint>& estimatedLinePoints) {
     // Implement your gradient calculation logic here based on your specific problem
     // This function should return the gradient vector
     vector<double> gradient(parameters.size(), 0.0);
@@ -69,13 +69,13 @@ vector<double> computeGradients(const vector<double>& parameters, const vector<l
     return gradient;
 }
 
-void gradient_descent(vector<point> &p) {
+void gradient_descent(Point &p) {
     // Initialize your initial estimates for x, y, and theta
-    vector<double> parameters = {p.x,p.y,p.thetha};
+    vector<double> parameters = {p.x,p.y,p.theta};
 
     // Your given line points and estimated line points
-    vector<lp> givenLinePoints = p.wlp;
-    vector<lp> estimatedLinePoints = p.nlp;
+    vector<WPoint> givenLinePoints = p.wlp;
+    vector<WPoint> estimatedLinePoints = p.nlp;
 
     // Number of iterations
     int numIterations = 1000;
