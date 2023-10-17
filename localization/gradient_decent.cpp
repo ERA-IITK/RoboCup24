@@ -2,6 +2,7 @@
 #include <cmath>
 #include <vector>
 #include "point.hpp"
+#include "linepoints.hpp"
 
 using namespace std;
 
@@ -75,13 +76,33 @@ void gradient_descent(Point &p) {
 
     // Your given line points and estimated line points
     vector<WPoint> givenLinePoints = p.wlp;
-    vector<WPoint> estimatedLinePoints = p.nlp;
+    vector<WPoint> estimatedLinePoints;
 
     // Number of iterations
     int numIterations = 1000;
 
     for (int iteration = 0; iteration < numIterations; ++iteration) {
         // Compute gradients based on your cost function
+        if(iteration==0){
+            for(int i=0;i<givenLinePoints.size();i++){
+            Point temp ;
+            temp.x=givenLinePoints[i].x;
+            temp.y=givenLinePoints[i].y;
+            linepoint lp = findNearestPoint(temp);
+            estimatedLinePoints[i].x = lp.x;
+            estimatedLinePoints[i].y = lp.y;
+        }
+
+        }
+        else for(int i=0;i<estimatedLinePoints.size();i++){
+            Point temp ;
+            temp.x=estimatedLinePoints[i].x;
+            temp.y=estimatedLinePoints[i].y;
+            linepoint lp = findNearestPoint(temp);
+            estimatedLinePoints[i].x = lp.x;
+            estimatedLinePoints[i].y = lp.y;
+        }
+
         vector<double> gradients = computeGradients(parameters, givenLinePoints, estimatedLinePoints);
 
         // Update parameters using RPROP

@@ -311,8 +311,8 @@ int main() {
 
     linepoint nearestPoint = findNearestPoint(a);
 
-    cout << "Given Point: {" << a.x << ", " << a.y << ", " << a.theta << "}" << endl;
-    cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
+    // cout << "Given Point: {" << a.x << ", " << a.y << ", " << a.theta << "}" << endl;
+    // cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
 
     return 0;
 }
