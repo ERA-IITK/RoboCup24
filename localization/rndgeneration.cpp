@@ -26,14 +26,18 @@ vector<Point> rndgen(int num_points) {
 
     return random_points;
 }
-// Uncomment to test the code
-int main() {
-    // Call the rndgen function to generate random points
-    vector<Point> points = rndgen(1000);
-
-    // You can access and print the generated points if needed
-    for (const auto& point : points) {
-        cout << "(" << point.x << ", " << point.y << ", " << point.theta << ")\n";
-    }
-    return 0;
+vector<Point> callrndgen(int num){
+    vector<Point> points = rndgen(num);
+    return points;
 }
+// Uncomment to test the code
+// int main() {
+//     // Call the rndgen function to generate random points
+//     vector<Point> points = rndgen(1000);
+
+//     // You can access and print the generated points if needed
+//     for (const auto& point : points) {
+//         cout << "(" << point.x << ", " << point.y << ", " << point.theta << ")\n";
+//     }
+//     return 0;
+// }

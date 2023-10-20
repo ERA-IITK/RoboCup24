@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include "point.hpp" 
+#include "linepoint.hpp"
 using namespace std;
 
 //origin is at bottom left corner of field when field is viewed in landscape mode
@@ -10,10 +11,6 @@ using namespace std;
 struct line{
     float a,b,c;
     //assuming line is of type ax+by=c
-};
-
-struct linepoint{                                    // point at which vectors sent from the point in consideraton intersect the line
-    float x,y,d;
 };
 
 struct limits{                                    
@@ -28,7 +25,7 @@ bool CompareByD(const linepoint &a, const linepoint &b){
 float distance(float x1,float y1,float x2,float y2){
     return sqrt(pow(x1-x2,2)+pow(y1-y2,2));
 }
-
+/*uncomment to test the code
 float randx(){
     float minv = 1;
     float maxv = 15;
@@ -53,7 +50,7 @@ int rantheta(){
     int random_integer = rand() % (max_value - min_value + 1) + min_value;
     return random_integer;
 }
-
+*/
 /*********************************The locuses of all lines on the field*********************************/
 
 /*
@@ -127,7 +124,7 @@ const limits Quad2 = {14.25,15,1,1.75};
 const limits Quad3 = {1,1.75,22.25,23};
 const limits Quad4 = {14.25,15,22.25,23};
 
-void solve_for_centreCircle(Point p,float thetha, vector<linepoint> temp){
+void solve_for_centreCircle(WPoint p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
     float a = -16 , b = -24, c=24;
     float m = tan(thetha);
@@ -151,7 +148,7 @@ void solve_for_centreCircle(Point p,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad1(Point p, float thetha, vector<linepoint> temp){
+void solve_for_quad1(WPoint p, float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
     float a = -2 , b = -2, c=1.4375;
     float m = tan(thetha);
@@ -175,7 +172,7 @@ void solve_for_quad1(Point p, float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad2(Point p,float thetha, vector<linepoint> temp){
+void solve_for_quad2(WPoint p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
     float a = -30 , b = -2, c=225.4375;
     float m = tan(thetha);
@@ -199,7 +196,7 @@ void solve_for_quad2(Point p,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad3(Point p,float thetha, vector<linepoint> temp){
+void solve_for_quad3(WPoint p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
     float a = -2 , b = -46, c=529.4375;
     float m = tan(thetha);
@@ -223,7 +220,7 @@ void solve_for_quad3(Point p,float thetha, vector<linepoint> temp){
     }
 }
 
-void solve_for_quad4(Point p,float thetha, vector<linepoint> temp){
+void solve_for_quad4(WPoint p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
     float a = -30 , b = -46, c=753.4375;
     float m = tan(thetha);
@@ -248,7 +245,7 @@ void solve_for_quad4(Point p,float thetha, vector<linepoint> temp){
 }
 
 
-vector<linepoint> linepoints(Point a){
+vector<linepoint> linepoints(WPoint a){
     float x=a.x,y=a.y;
     vector<linepoint> dists;
     for(float thetha =0; thetha<360; thetha+=0.5){
@@ -292,8 +289,8 @@ vector<linepoint> linepoints(Point a){
     }
     return dists;
 }
-//uncomment to test the code
-linepoint findNearestPoint(Point a) {
+
+linepoint findNearestPoint(WPoint a) {
     vector<linepoint> all_points = linepoints(a);
 
     sort(all_points.begin(), all_points.end(), CompareByD);
@@ -301,18 +298,19 @@ linepoint findNearestPoint(Point a) {
     return all_points[0];
 }
 
-int main() {
-    srand(static_cast<unsigned>(time(nullptr)));
+//uncomment to test the code
+// int main() {
+//     srand(static_cast<unsigned>(time(nullptr)));
 
-    Point a;
-    a.x = randx();
-    a.y = randy();
-    a.theta = rantheta();
+//     Point a;
+//     a.x = randx();
+//     a.y = randy();
+//     a.theta = rantheta();
 
-    linepoint nearestPoint = findNearestPoint(a);
+//     linepoint nearestPoint = findNearestPoint(a);
 
     // cout << "Given Point: {" << a.x << ", " << a.y << ", " << a.theta << "}" << endl;
     // cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
 
-    return 0;
-}
+//     return 0;
+// }
