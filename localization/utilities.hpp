@@ -1,6 +1,6 @@
 #ifndef MY_HEADER_HPP
 #define MY_HEADER_HPP
-
+#pragma once
 #include <vector>
 #include <cmath>
 

@@ -1,31 +1,17 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <algorithm>
-#include "point.hpp" 
-#include "linepoint.hpp"
+#include "linepoints.hpp"
 using namespace std;
 
 //origin is at bottom left corner of field when field is viewed in landscape mode
 
-struct line{
-    float a,b,c;
-    //assuming line is of type ax+by=c
-};
-
-struct limits{                                    
-    float xmin,xmax,ymin,ymax;
-};
-
 bool CompareByD(const linepoint &a, const linepoint &b){
-    cout<<a.d<<" "<<b.d<<endl;
+    // cout<<a.d<<" "<<b.d<<endl;
     return a.d < b.d;
 }
 
 float distance(float x1,float y1,float x2,float y2){
     return sqrt(pow(x1-x2,2)+pow(y1-y2,2));
 }
-/*uncomment to test the code
+// uncomment to test the code
 float randx(){
     float minv = 1;
     float maxv = 15;
@@ -50,7 +36,7 @@ int rantheta(){
     int random_integer = rand() % (max_value - min_value + 1) + min_value;
     return random_integer;
 }
-*/
+
 /*********************************The locuses of all lines on the field*********************************/
 
 /*
@@ -118,11 +104,11 @@ const vector<limits> Lim = {
     {11.45,11.45,1,3.25},//*
     };
 
-const limits Circle = {6,10,10,14};
-const limits Quad1 = {1,1.75,1,1.75};
-const limits Quad2 = {14.25,15,1,1.75};
-const limits Quad3 = {1,1.75,22.25,23};
-const limits Quad4 = {14.25,15,22.25,23};
+extern const limits Circle = {6,10,10,14};
+extern const limits Quad1 = {1,1.75,1,1.75};
+extern const limits Quad2 = {14.25,15,1,1.75};
+extern const limits Quad3 = {1,1.75,22.25,23};
+extern const limits Quad4 = {14.25,15,22.25,23};
 
 void solve_for_centreCircle(WPoint p,float thetha, vector<linepoint> temp){
     float x=p.x,y=p.y;
@@ -294,23 +280,23 @@ linepoint findNearestPoint(WPoint a) {
     vector<linepoint> all_points = linepoints(a);
 
     sort(all_points.begin(), all_points.end(), CompareByD);
-
-    return all_points[0];
+    linepoint x=all_points[0];
+    all_points.clear();
+    return x;
 }
 
 //uncomment to test the code
 // int main() {
 //     srand(static_cast<unsigned>(time(nullptr)));
 
-//     Point a;
+//     WPoint a;
 //     a.x = randx();
 //     a.y = randy();
-//     a.theta = rantheta();
 
 //     linepoint nearestPoint = findNearestPoint(a);
 
-    // cout << "Given Point: {" << a.x << ", " << a.y << ", " << a.theta << "}" << endl;
-    // cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
+//     cout << "Given Point: {" << a.x << ", " << a.y << "}" << endl;
+//     cout << "Nearest Point: {" << nearestPoint.x << ", " << nearestPoint.y << ", " << nearestPoint.d << "}" << endl;
 
 //     return 0;
 // }

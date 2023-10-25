@@ -1,6 +1,7 @@
 #include <vector>
 #include <cmath>
 #include "point.hpp"
+#include "utilities.hpp"
 using namespace std;
 double mse(double x1, double x2, double y1, double y2){
     double error = pow(x1 - x2, 2) + pow(y1 - y2, 2);
@@ -39,7 +40,7 @@ void inc_age(vector<Point> p){
     }
 }
 
-void del_nodes(vector<Point>& p, int threshold=10) { // threshold to be determined experimentally
+void del_nodes(vector<Point>& p, int threshold) { // threshold to be determined experimentally
     auto it = p.begin();
     while (it != p.end()) {
         if (it->age - it->score >= threshold) {

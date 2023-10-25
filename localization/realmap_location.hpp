@@ -1,6 +1,6 @@
 #ifndef CAMERA_PROJECTION_HPP
 #define CAMERA_PROJECTION_HPP
-
+#pragma once
 #include <cmath>
 using namespace std;
 // Define camera parameters

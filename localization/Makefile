@@ -1,25 +1,26 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -g -std=c++11 -Wall
 
-# List of source files and their corresponding targets
 BUILD_DIR = build
-SOURCES = linedetection.cpp depth_estimation.cpp heatmap.cpp rndgeneration.cpp linepoints.cpp costmatrix.cpp
-TARGETS = $(addprefix $(BUILD_DIR)/,$(SOURCES:.cpp=))
+
+SOURCES = rndgeneration.cpp linepoints.cpp realmap_location.cpp utilities.cpp pipeline.cpp gradient_descent.cpp
+TARGETS = $(addprefix $(BUILD_DIR)/,$(SOURCES:.cpp=.o))
+EXECUTABLE = $(BUILD_DIR)/pipeline
+
 LIBS = `pkg-config --libs opencv4`
 CFLAGS = `pkg-config --cflags opencv4`
 
-# Rule to build all targets
-all: $(TARGETS)
-
-# Generic rule to build individual targets
-$(BUILD_DIR)/%: %.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ $(CFLAGS) $(LIBS)
-
-# Rule to build testMain from testMain.cpp and its dependencies
-$(BUILD_DIR)/hungarian: module_hungarian/Hungarian.cpp module_hungarian/Hungarian.h hungarian.cpp
+$(EXECUTABLE): $(TARGETS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(CFLAGS) $(LIBS)
 
-clean:
-	rm -f $(TARGETS) $(BUILD_DIR)/testMain
+$(BUILD_DIR)/%.o: %.cpp %.hpp point.hpp linepoint.hpp raw_points.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CFLAGS)
 
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/
+all: $(EXECUTABLE)
+# $(BUILD_DIR)/gradient_descent.o: gradient_descent.cpp gradient_descent.hpp point.hpp linepoint.hpp raw_points.hpp linepoints.o
+# 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CFLAGS)
+$(BUILD_DIR)/pipeline.o: pipeline.cpp point.hpp linepoint.hpp raw_points.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CFLAGS)
+clean:
+	rm -f $(TARGETS) $(EXECUTABLE)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/

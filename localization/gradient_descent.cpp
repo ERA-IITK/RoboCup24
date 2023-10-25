@@ -3,14 +3,9 @@
 #include <vector>
 #include "point.hpp"
 #include "linepoints.hpp"
+#include "linepoint.hpp"
 
 using namespace std;
-
-struct lp{
-    double x;
-    double y;
-};
-
 
 // Define your cost function (simplified)
 double costFunction(const vector<WPoint>& estimatedLinePoints, const vector<WPoint>& givenLinePoints) {
@@ -33,7 +28,6 @@ void gradientDescentRPROP(vector<double>& parameters, vector<double>& gradients)
             delta[i] = max(delta[i] * 0.5, 1e-6);
             gradients[i] = 0;
         }
-
         parameters[i] -= copysign(delta[i], gradients[i]);
     }
 }
@@ -74,43 +68,26 @@ void gradient_descent(Point &p) {
     // Initialize your initial estimates for x, y, and theta
     vector<double> parameters = {p.x,p.y,p.theta};
 
-    // Your given line points and estimated line points
-    vector<WPoint> givenLinePoints = p.wlp;
-    vector<WPoint> estimatedLinePoints;
-
     // Number of iterations
-    int numIterations = 1000;
+    int numIterations = 10;
 
     for (int iteration = 0; iteration < numIterations; ++iteration) {
         // Compute gradients based on your cost function
-        if(iteration==0){
-            for(int i=0;i<givenLinePoints.size();i++){
-            Point temp ;
-            temp.x=givenLinePoints[i].x;
-            temp.y=givenLinePoints[i].y;
+        for(int i=0;i<p.nlp.size();i++){
+            WPoint temp(temp.x=p.nlp[i].x, temp.y=p.nlp[i].y);
             linepoint lp = findNearestPoint(temp);
-            estimatedLinePoints[i].x = lp.x;
-            estimatedLinePoints[i].y = lp.y;
+            p.nlp[i].x = lp.x;
+            p.nlp[i].y = lp.y;
         }
-
-        }
-        else for(int i=0;i<estimatedLinePoints.size();i++){
-            Point temp ;
-            temp.x=estimatedLinePoints[i].x;
-            temp.y=estimatedLinePoints[i].y;
-            linepoint lp = findNearestPoint(temp);
-            estimatedLinePoints[i].x = lp.x;
-            estimatedLinePoints[i].y = lp.y;
-        }
-
-        vector<double> gradients = computeGradients(parameters, givenLinePoints, estimatedLinePoints);
+        vector<double> gradients = computeGradients(parameters, p.wlp, p.nlp);
 
         // Update parameters using RPROP
         gradientDescentRPROP(parameters, gradients);
 
         // Calculate the cost for this iteration
-        double cost = costFunction(estimatedLinePoints, givenLinePoints);
+        double cost = costFunction(p.nlp, p.wlp);
         cout << "Iteration " << iteration << ": Cost = " << cost << endl;
+        p.cost=cost;
     }
 
     // Output the final estimated parameters
