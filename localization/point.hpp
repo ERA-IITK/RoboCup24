@@ -23,4 +23,5 @@ public:
     double age=0;
     vector<WPoint> wlp;
     vector<WPoint> nlp;
+    vector<WPoint> rwlp;
 };
