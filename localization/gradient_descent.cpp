@@ -23,7 +23,7 @@ double mse(const vector<WPoint> &givenLinePoints, const vector<WPoint> &estimate
 double costFunction(const vector<WPoint> &givenLinePoints, const vector<WPoint> &estimatedLinePoints)
 {
     double cost = mse(givenLinePoints, estimatedLinePoints);
-    double err = 1 - c * c / pow((c * c + cost * cost), 2);
+    double err = 1 - c * c / (c * c + cost * cost);
     return err;
 }
 
@@ -53,7 +53,7 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
     double x = parameters[0];
     double y = parameters[1];
     double theta = parameters[2] * (M_PI / 180.0);
-    double constant = (4 * e / c) * (pow(sqrt(1 - err), 3));
+    double constant = (2 * e) * (1 - err) * (1 / (c * c + e * e));
 
     gradient[0] = 0;
     gradient[1] = 0;
@@ -62,7 +62,7 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
     {
         gradient[0] += 2 * constant * (givenLinePoints[i].x - estimatedLinePoints[i].x);
         gradient[1] += 2 * constant * (givenLinePoints[i].y - estimatedLinePoints[i].y);
-        gradient[2] += 2 * constant * ((givenLinePoints[i].x - estimatedLinePoints[i].x) * (givenLinePoints[i].x - x + rel_estimatedLinePoints[i].x * sin(theta) + rel_estimatedLinePoints[i].y * cos(theta)) + (givenLinePoints[i].y - estimatedLinePoints[i].y) * (givenLinePoints[i].y - y - rel_estimatedLinePoints[i].x * cos(theta) + rel_estimatedLinePoints[i].y * sin(theta)));
+        gradient[2] += 2 * constant * ((givenLinePoints[i].x - estimatedLinePoints[i].x) * (givenLinePoints[i].x + rel_estimatedLinePoints[i].x * sin(theta) + rel_estimatedLinePoints[i].y * cos(theta)) + (givenLinePoints[i].y - estimatedLinePoints[i].y) * (givenLinePoints[i].y - rel_estimatedLinePoints[i].x * cos(theta) + rel_estimatedLinePoints[i].y * sin(theta)));
     }
 
     return gradient;
