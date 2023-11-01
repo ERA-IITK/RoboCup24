@@ -31,9 +31,9 @@ void get_realmap_loc(double depth, double x_angle, double y_angle, double &x, do
     realmap_loc(x, y, x, y, x_global, y_global, the);
 }
 
-void realmap_loc(double &x, double &y, double &rel_x, double &rel_y, double x_global, double y_global, double the)
+void realmap_loc(double &x, double &y, const double &rel_x, const double &rel_y, const double &x_global, const double &y_global, const double &the)
 {
-    the *= M_PI / 180.0;
-    x = x_global + rel_x * cos(the) - rel_y * sin(the);
-    y = y_global + rel_x * sin(the) + rel_y * cos(the);
+    double theta = the * M_PI / 180.0;
+    x = x_global + rel_x * cos(theta) - rel_y * sin(theta);
+    y = y_global + rel_x * sin(theta) + rel_y * cos(theta);
 }

@@ -5,42 +5,50 @@
 #include "linepoints.hpp"
 #include "linepoint.hpp"
 #include "realmap_location.hpp"
-
 using namespace std;
-int c = 50;
-int numIterations = 10;
 
-double mse(const vector<WPoint> &givenLinePoints, const vector<WPoint> &estimatedLinePoints)
+int c = 250;
+int numIterations = 20;
+double learningRate = 0.5;
+double beta1 = 0.75;
+double beta2 = 0.88;
+
+double squareError(const vector<WPoint> &givenLinePoints, const vector<WPoint> &estimatedLinePoints)
 {
-    double cost = 0;
-    for (int i = 0; i < estimatedLinePoints.size(); ++i)
+    double sqrerr = 0;
+    for (int i = 0; i < (int)estimatedLinePoints.size(); ++i)
     {
-        cost += pow(givenLinePoints[i].x - estimatedLinePoints[i].x, 2) + pow(givenLinePoints[i].y - estimatedLinePoints[i].y, 2);
+        sqrerr += pow(estimatedLinePoints[i].x - givenLinePoints[i].x, 2) + pow(estimatedLinePoints[i].y - givenLinePoints[i].y, 2);
     }
-    return cost;
+    return sqrerr;
 }
 
 double costFunction(const vector<WPoint> &givenLinePoints, const vector<WPoint> &estimatedLinePoints)
 {
-    double cost = mse(givenLinePoints, estimatedLinePoints);
-    double err = 1 - c * c / (c * c + cost * cost);
+    double sqrerr = squareError(givenLinePoints, estimatedLinePoints);
+    double err = 1 - c * c / (c * c + sqrerr);
     return err;
 }
 
-void gradientDescentRPROP(vector<double> &parameters, vector<double> &gradients, vector<double> &delta)
+void adamGradientDescent(vector<double> &parameters, const vector<double> &gradients, vector<double> &m, vector<double> &v, int t, double learning_rate = 0.5, double beta1 = 0.9, double beta2 = 0.999, double epsilon = 1e-8)
 {
-    for (int i = 0; i < parameters.size(); ++i)
+    // Hyperparameters:
+    // learning_rate: Step size for gradient descent.
+    // beta1: Exponential decay rate for the first moment estimate.
+    // beta2: Exponential decay rate for the second moment estimate.
+    // epsilon: Small value to prevent division by zero.
+
+    const double one_minus_beta1 = 1.0 - beta1;
+    const double one_minus_beta2 = 1.0 - beta2;
+    const int num_parameters = parameters.size();
+
+    for (int i = 0; i < num_parameters; ++i)
     {
-        if (gradients[i] * delta[i] > 0)
-        {
-            delta[i] = min(delta[i] * 1.2, 50.0);
-        }
-        else if (gradients[i] * delta[i] < 0)
-        {
-            delta[i] = max(delta[i] * 0.5, 1e-4);
-            gradients[i] = 0;
-        }
-        parameters[i] -= copysign(delta[i], gradients[i]);
+        m[i] = beta1 * m[i] + one_minus_beta1 * gradients[i];
+        v[i] = beta2 * v[i] + one_minus_beta2 * (gradients[i] * gradients[i]);
+        double m_hat = m[i] / (1.0 - pow(beta1, t));
+        double v_hat = v[i] / (1.0 - pow(beta2, t));
+        parameters[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);
     }
 }
 
@@ -48,67 +56,68 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
 {
     vector<double> gradient(parameters.size(), 0.0);
     double err = costFunction(givenLinePoints, estimatedLinePoints);
-    double e = mse(givenLinePoints, estimatedLinePoints);
+    double e = squareError(givenLinePoints, estimatedLinePoints);
 
-    double x = parameters[0];
-    double y = parameters[1];
     double theta = parameters[2] * (M_PI / 180.0);
-    double constant = (2 * e) * (1 - err) * (1 / (c * c + e * e));
+    double constant = (1 - err) * (1 / (c * c + e));
 
     gradient[0] = 0;
     gradient[1] = 0;
     gradient[2] = 0;
-    for (int i = 0; i < estimatedLinePoints.size(); i++)
+    for (int i = 0; i < (int)estimatedLinePoints.size(); i++)
     {
-        gradient[0] += 2 * constant * (givenLinePoints[i].x - estimatedLinePoints[i].x);
-        gradient[1] += 2 * constant * (givenLinePoints[i].y - estimatedLinePoints[i].y);
-        gradient[2] += 2 * constant * ((givenLinePoints[i].x - estimatedLinePoints[i].x) * (givenLinePoints[i].x + rel_estimatedLinePoints[i].x * sin(theta) + rel_estimatedLinePoints[i].y * cos(theta)) + (givenLinePoints[i].y - estimatedLinePoints[i].y) * (givenLinePoints[i].y - rel_estimatedLinePoints[i].x * cos(theta) + rel_estimatedLinePoints[i].y * sin(theta)));
+        gradient[0] += 2 * constant * (estimatedLinePoints[i].x - givenLinePoints[i].x);
+        gradient[1] += 2 * constant * (estimatedLinePoints[i].y - givenLinePoints[i].y);
+        gradient[2] += 2 * constant * ((estimatedLinePoints[i].x - givenLinePoints[i].x) * (-1 * rel_estimatedLinePoints[i].x * sin(theta) + -1 * rel_estimatedLinePoints[i].y * cos(theta)) + (estimatedLinePoints[i].y - givenLinePoints[i].y) * (rel_estimatedLinePoints[i].x * cos(theta) - rel_estimatedLinePoints[i].y * sin(theta)));
     }
 
+    cout << "Grads " << gradient[0] << ", " << gradient[1] << ", " << gradient[2] << "\n";
+    gradient[2] *= 1000;
     return gradient;
+}
+
+void updateLinePoints(Point &p)
+{
+    for (int i = 0; i < (int)p.rwlp.size(); i++)
+    {
+        realmap_loc(p.wlp[i].x, p.wlp[i].y, p.rwlp[i].x, p.rwlp[i].y, p.x, p.y, p.theta);
+        WPoint temp(temp.x = p.wlp[i].x, temp.y = p.wlp[i].y);
+        temp.x = max(1.01, p.wlp[i].x);
+        temp.x = min(14.99, temp.x);
+        temp.y = max(1.01, p.wlp[i].y);
+        temp.y = min(22.99, temp.y);
+        linepoint lp = findNearestPoint(temp);
+        p.nlp[i].x = lp.x;
+        p.nlp[i].y = lp.y;
+    }
 }
 
 void gradient_descent(Point &p)
 {
     vector<double> parameters = {p.x, p.y, p.theta};
-    vector<double> delta(parameters.size(), 0.1);
+    vector<double> m(parameters.size(), 0.0);
+    vector<double> v(parameters.size(), 0.0);
 
     for (int iteration = 0; iteration < numIterations; ++iteration)
     {
-        for (int i = 0; i < p.nlp.size(); i++)
-        {
-            realmap_loc(p.wlp[i].x, p.wlp[i].y, p.rwlp[i].x, p.rwlp[i].y, p.x, p.y, p.theta);
-            WPoint temp(temp.x = p.wlp[i].x, temp.y = p.wlp[i].y);
-            temp.x = max(1.01, p.wlp[i].x);
-            temp.x = min(14.99, temp.x);
-            temp.y = max(1.01, p.wlp[i].y);
-            temp.y = min(22.99, temp.y);
-            linepoint lp = findNearestPoint(temp);
-            p.nlp[i].x = lp.x;
-            p.nlp[i].y = lp.y;
-        }
+        updateLinePoints(p);
         if (iteration == 0)
-        {
-            double tempo = mse(p.nlp, p.wlp);
-            cout << "Initial Cost  = " << tempo << endl;
-        }
+            cout << "Initial Cost " << costFunction(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
+        else
+            cout << "Iteration " << iteration << ": SqErr = " << squareError(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
 
         vector<double> gradients = computeGradients(parameters, p.nlp, p.wlp, p.rwlp);
-        gradientDescentRPROP(parameters, gradients, delta);
-        double cost = mse(p.nlp, p.wlp);
+        adamGradientDescent(parameters, gradients, m, v, iteration + 1, learningRate, beta1, beta2);
 
         p.x = parameters[0];
         p.y = parameters[1];
         p.theta = parameters[2];
-        p.cost = cost;
-
-        cout << "Iteration " << iteration + 1 << ": Cost = " << cost << endl;
+        p.cost = costFunction(p.nlp, p.wlp);
     }
 
-    cout << "Final Parameters (x, y, theta): ";
-    for (double param : parameters)
-    {
-        cout << param << " ";
-    }
+    updateLinePoints(p);
+    cout << "Iteration " << numIterations << ": SqErr = " << squareError(p.nlp, p.wlp) << endl;
+    cout << "(" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
+    cout << "Final Cost " << costFunction(p.nlp, p.wlp) << endl;
     cout << endl;
 }

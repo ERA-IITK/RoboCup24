@@ -50,4 +50,3 @@ void del_nodes(vector<Point>& p, int threshold) { // threshold to be determined 
         }
     }
 }
-
