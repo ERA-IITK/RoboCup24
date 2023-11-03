@@ -11,6 +11,7 @@
 #include "raw_points.hpp"
 #include "gradient_descent.hpp"
 #include <opencv2/opencv.hpp>
+
 using namespace std;
 
 void saveMatrixAsImage(const vector<WPoint> &rwlp)
@@ -101,6 +102,50 @@ int main()
     for (int i = 0; i < rndpts; i++)
     {
         cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+    }
+    int frames = 2;
+    while(frames--){
+        odometry odom;
+        //generate random odometry using rand
+        odom.x = 0.1;
+        odom.y = 0.1;
+        odom.theta = 0.1;
+        update_odom(pts, odom);
+        inc_age(pts);
+        addscore(pts);
+        del_nodes(pts);
+
+        for (int i = 0; i < rndpts; i++)
+        {
+            // pts[i].rwlp.resize(raw_wlp.size());
+            // pts[i].wlp.resize(raw_wlp.size());
+            // pts[i].nlp.resize(raw_wlp.size());
+
+            pts[i].rwlp.resize(rel.size());
+            pts[i].wlp.resize(rel.size());
+            pts[i].nlp.resize(rel.size());
+
+            for (int j = 0; j < rel.size(); j++)
+            {
+                // get_projection(raw_wlp[j].depth, raw_wlp[j].x_angle, raw_wlp[j].y_angle, pts[i].rwlp[j].x, pts[i].rwlp[j].y);
+                pts[i].rwlp[j].x = rel[j].x;
+                pts[i].rwlp[j].y = rel[j].y;
+            }
+        }
+
+        for (int i = 0; i < rndpts; i++)
+        {
+            gradient_descent(pts[i]);
+        }
+
+        sort(pts.begin(), pts.end(), [](const Point &lhs, const Point &rhs)
+            { return lhs.cost < rhs.cost; });
+
+        // pts.resize(100);
+        for (int i = 0; i < rndpts; i++)
+        {
+            cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+        }
     }
     return 0;
 }
