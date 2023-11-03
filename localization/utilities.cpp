@@ -23,15 +23,7 @@ vector<double> computeMSELoss(vector<Point> p) {
 }
 
 void addscore(vector<Point> p){
-    vector<double> meanLoss=computeMSELoss(p);
-    int mx=-1, ind=-1;
-    for(int i=0; meanLoss.size(); i++){
-        if(meanLoss[i]>mx){
-            mx=meanLoss[i];
-            ind=i;
-        }
-    }
-    p[ind].score++;
+    p[0].score++;
 }
 
 void inc_age(vector<Point> p){
@@ -48,5 +40,14 @@ void del_nodes(vector<Point>& p, int threshold) { // threshold to be determined 
         } else {
             ++it;
         }
+    }
+}
+
+// update odometry of points
+void update_odom(vector<Point>& p, odometry odom) {
+    for (auto& pt : p) {
+        pt.x += odom.x;
+        pt.y += odom.y;
+        pt.theta += odom.theta;
     }
 }

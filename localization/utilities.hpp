@@ -15,5 +15,6 @@ vector<double> computeMSELoss(vector<Point> p);
 void addscore(vector<Point> p);
 void inc_age(vector<Point> p);
 void del_nodes(vector<Point>& p, int threshold = 10);
+void update_odom(vector<Point>& p, odometry odom);
 
 #endif // MY_HEADER_HPP

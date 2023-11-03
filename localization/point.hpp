@@ -25,3 +25,12 @@ public:
     vector<WPoint> nlp;
     vector<WPoint> rwlp;
 };
+
+class odometry {
+public:
+    double x;
+    double y;
+    double theta;
+    odometry(): x{0.0}, y{0.0}, theta{0.0} {}
+    odometry(double _x, double _y, double _theta) : x(_x), y(_y), theta(_theta) {}
+};
