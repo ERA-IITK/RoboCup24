@@ -23,4 +23,4 @@ $(BUILD_DIR)/pipeline.o: pipeline.cpp point.hpp linepoint.hpp raw_points.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CFLAGS)
 clean:
 	rm -f $(TARGETS) $(EXECUTABLE)
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/
