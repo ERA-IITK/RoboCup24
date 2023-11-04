@@ -17,8 +17,6 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include "sensor_msgs/image_encodings.hpp"
 #include <Eigen/Core>
@@ -125,7 +123,7 @@ struct point
     double x, y;
 };
 
-void localisation_thread()
+void localization_thread()
 {
     // int rndpts = 10;
     // vector<WPoint> rel = {
@@ -233,7 +231,7 @@ int main(int argc, char * argv[])
 {
     thread t1(odometry_thread, argc, argv);
     thread t2(localization_thread);
-    thread t3(linedetection_thread);
+    thread t3(linedetection_thread, argc, argv);
     t1.join();
     t2.join();
     t3.join();
