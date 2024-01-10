@@ -25,6 +25,7 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
   ${cv_bridge_INCLUDE_DIRS}
 )
+ament_target_dependencies(pipeline "cv_bridge")
 target_include_directories(pipeline PUBLIC
   ${rclcpp_INCLUDE_DIRS}
   ${std_msgs_INCLUDE_DIRS}
@@ -33,7 +34,7 @@ target_include_directories(pipeline PUBLIC
   ${ament_INCLUDE_DIRS}
   ${cv_bridge_INCLUDE_DIRS}
   ${rcl_interfaces_INCLUDE_DIRS}
-  ${Eigen3_INCLUDE_DIRS}  # Add if you are using Eigen library
+  ${Eigen3_INCLUDE_DIRS} 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
