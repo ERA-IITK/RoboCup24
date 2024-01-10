@@ -25,7 +25,7 @@
 
 using std::placeholders::_1;
 using namespace std;
-odometry odom;
+class odometry odom;
 odom.x = 0;
 odom.y = 0;
 odom.theta = 0;
@@ -58,8 +58,8 @@ class OdometrySubscriber : public rclcpp::Node
 
     // Do something with the yaw angle, e.g., print it
     RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
-    odom.x += msg.pose.pose.x;
-    odom.y += msg.pose.pose.y;
+    odom.x += msg->pose.position.pose.x;
+    odom.y += msg->pose.position.pose.y;
     odom.theta += yaw_degrees;
   }
 

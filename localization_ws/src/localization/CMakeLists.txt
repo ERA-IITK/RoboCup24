@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(localization)
+
 set(LIBRARY_NAME libs)  # Adjust the library name as needed
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -28,13 +29,6 @@ add_library(${LIBRARY_NAME}
   src/realmap_location.cpp
   src/utilities.cpp
   src/gradient_descent.cpp
-  src/rndgeneration.hpp
-  src/linepoints.hpp
-  src/realmap_location.hpp
-  src/utilities.hpp
-  src/gradient_descent.hpp
-  src/point.hpp
-  src/raw_points.hpp
 )
 add_executable(pipeline src/pipeline.cpp)
 
@@ -100,3 +94,4 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
