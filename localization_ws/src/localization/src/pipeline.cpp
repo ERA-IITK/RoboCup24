@@ -2,24 +2,23 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
-#include "../include/localization/point.hpp"
-#include "../include/localization/"
-#include "../include/localization/linepoints.hpp"
-#include "../include/localization/realmap_location.hpp"
-#include "../include/localization/utilities.hpp"
-#include "../include/localization/rndgeneration.hpp"
-#include "../include/localization/raw_points.hpp"
-#include "../include/localization/gradient_descent.hpp"
+#include "raw_points.hpp"
+#include "point.hpp"
+#include "linepoints.hpp"
+#include "realmap_location.hpp"
+#include "utilities.hpp"
+#include "rndgeneration.hpp"
+#include "gradient_descent.hpp"
 #include <opencv2/opencv.hpp>
-#include "../include/localization/linedetection.hpp"
+#include "linedetection.hpp"
 #include <thread>
 #include <memory>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "rclcpp/rclcpp.hpp"
-#include <cv_bridge/cv_bridge.h>
 #include "sensor_msgs/image_encodings.hpp"
 #include <Eigen/Core>
+#include "rclcpp/rclcpp.hpp"
+#include <cv_bridge/cv_bridge.h>
 
 using std::placeholders::_1;
 using namespace std;

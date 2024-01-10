@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../module_hungarian/Hungarian.h"
+#include "module_hungarian/Hungarian.h"
 
 
 int main(void)

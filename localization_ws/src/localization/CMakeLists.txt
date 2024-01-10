@@ -11,16 +11,40 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(opencv2 REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(rcl_interfaces REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
 add_executable(pipeline src/pipeline.cpp)
+include_directories(
+  include
+  ${OpenCV_INCLUDE_DIRS}
+  ${cv_bridge_INCLUDE_DIRS}
+)
 target_include_directories(pipeline PUBLIC
+  ${rclcpp_INCLUDE_DIRS}
+  ${std_msgs_INCLUDE_DIRS}
+  ${sensor_msgs_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  ${ament_INCLUDE_DIRS}
+  ${cv_bridge_INCLUDE_DIRS}
+  ${rcl_interfaces_INCLUDE_DIRS}
+  ${Eigen3_INCLUDE_DIRS}  # Add if you are using Eigen library
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+
 target_compile_features(pipeline PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+target_link_libraries(pipeline
+  ${OpenCV_LIBRARIES}
+  ${ament_LIBRARIES}
+  ${cv_bridge_LIBRARIES}
+  Eigen3::Eigen  # Add if you are using Eigen library
+)
 
 install(TARGETS pipeline
   DESTINATION lib/${PROJECT_NAME})
@@ -38,3 +62,4 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+

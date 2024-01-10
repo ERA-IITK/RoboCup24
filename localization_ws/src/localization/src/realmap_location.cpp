@@ -1,5 +1,5 @@
 #include <cmath>
-#include "../include/localization/realmap_location.hpp"
+#include "realmap_location.hpp"
 
 // Define function to get projection of point in 2D plane
 void get_projection(double depth, double x_angle, double y_angle, double &x, double &y)
