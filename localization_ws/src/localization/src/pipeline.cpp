@@ -2,15 +2,15 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
-#include "raw_points.hpp"
-#include "point.hpp"
-#include "linepoints.hpp"
-#include "realmap_location.hpp"
-#include "utilities.hpp"
-#include "rndgeneration.hpp"
-#include "gradient_descent.hpp"
+#include "localization/raw_points.hpp"
+#include "localization/point.hpp"
+#include "localization/linepoints.hpp"
+#include "localization/realmap_location.hpp"
+#include "localization/utilities.hpp"
+#include "localization/rndgeneration.hpp"
+#include "localization/gradient_descent.hpp"
 #include <opencv2/opencv.hpp>
-#include "linedetection.hpp"
+#include "localization/linedetection.hpp"
 #include <thread>
 #include <memory>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -21,7 +21,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include "nav_msgs/msg/odometry.hpp"
 #include "tf2/utils.h"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
 using std::placeholders::_1;
 using namespace std;

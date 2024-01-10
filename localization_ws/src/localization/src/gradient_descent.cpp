@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "point.hpp"
-#include "linepoints.hpp"
-#include "linepoint.hpp"
-#include "realmap_location.hpp"
+#include "localization/point.hpp"
+#include "localization/linepoints.hpp"
+#include "localization/linepoint.hpp"
+#include "localization/realmap_location.hpp"
 using namespace std;
 
 int c = 250;

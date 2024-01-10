@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
-#include "point.hpp"
-#include "utilities.hpp"
+#include "localization/point.hpp"
+#include "localization/utilities.hpp"
 using namespace std;
 double mse(double x1, double x2, double y1, double y2){
     double error = pow(x1 - x2, 2) + pow(y1 - y2, 2);

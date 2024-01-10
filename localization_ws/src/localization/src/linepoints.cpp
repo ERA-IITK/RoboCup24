@@ -1,4 +1,4 @@
-#include "linepoints.hpp"
+#include "localization/linepoints.hpp"
 using namespace std;
 
 // origin is at bottom left corner of field when field is viewed in landscape mode

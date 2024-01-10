@@ -1,9 +1,9 @@
 #include <iostream>
 #include <random>
 #include <vector>
-#include "point.hpp"  // Include the header file containing the Point struct
-#include "raw_points.hpp"
-#include "rndgeneration.hpp"
+#include "localization/point.hpp"  // Include the header file containing the Point struct
+#include "localization/raw_points.hpp"
+#include "localization/rndgeneration.hpp"
 using namespace std;
 
 // Define the rndgen function to generate random points

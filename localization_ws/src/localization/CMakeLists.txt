@@ -86,7 +86,12 @@ target_link_libraries(pipeline
 install(TARGETS pipeline
   DESTINATION lib/${PROJECT_NAME}
 )
-
+install(DIRECTORY
+  include/
+  DESTINATION include/${PROJECT_NAME}
+  USE_SOURCE_PERMISSIONS)
+  
+ament_export_include_directories(include)
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
