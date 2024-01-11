@@ -19,6 +19,9 @@
 #include <Eigen/Core>
 #include "rclcpp/rclcpp.hpp"
 #include <cv_bridge/cv_bridge.h>
+#include "nav_msgs/msg/odometry.hpp"
+#include "tf2/utils.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 using std::placeholders::_1;
 using namespace std;
@@ -30,35 +33,72 @@ vector<Eigen::Vector3d> worldCoordinates;
 class OdometrySubscriber : public rclcpp::Node
 {
   public:
-    OdometrySubscriber()
-    : Node("minimal_subscriber")
-    {
-      subscription_ = this->create_subscription<odometry>(
-      "topic", 10, std::bind(&OdometrySubscriber::topic_callback, this, _1));
-    }
+    OdomSubscriberNode() : Node("odom_subscriber_node") {
+    // Subscribe to the /odom topic
+    subscription_ = create_subscription<nav_msgs::msg::Odometry>(
+        "/odom", 10, std::bind(&OdomSubscriberNode::odomCallback, this, std::placeholders::_1));
+  }
 
   private:
-    void topic_callback(const odometry & msg) const
-    {
-        RCLCPP_INFO(this->get_logger(), "I heard: '%d %d %d'", msg.data.x, msg.data.y, msg.data.theta);
-        odom.x += msg.data.x;
-        odom.y += msg.data.y;
-        odom.theta += msg.data.theta;
-    }
-    rclcpp::Subscription<odometry>::SharedPtr subscription_;
+    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+    // Callback function for /odom topic
+    RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
+
+    // Extract quaternion orientation from Odometry message
+    geometry_msgs::msg::Quaternion orientation_quaternion = msg->pose.pose.orientation;
+
+    // Convert quaternion to Euler angles (roll, pitch, yaw)
+    tf2::Quaternion tf_quaternion;
+    tf2::fromMsg(orientation_quaternion, tf_quaternion);
+    tf2Scalar roll, pitch, yaw;
+    tf2::Matrix3x3(tf_quaternion).getRPY(roll, pitch, yaw);
+
+    // Extract rotation around the y-axis (yaw)
+    double yaw_degrees = tf2::getYaw(orientation_quaternion) * 180.0 / M_PI;
+
+    // Do something with the yaw angle, e.g., print it
+    RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
+    odom.x += msg.pose.pose.x;
+    odom.y += msg.pose.pose.y;
+    odom.theta += yaw_degrees;
+  }
+
+//   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
+//     void topic_callback(const odometry & msg) const
+//     {
+//         RCLCPP_INFO(this->get_logger(), "I heard: '%d %d %d'", msg.data.x, msg.data.y, msg.data.theta);
+//         odom.x += msg.data.x;
+//         odom.y += msg.data.y;
+//         odom.theta += msg.data.theta;
+//     }
+//     rclcpp::Subscription<odometry>::SharedPtr subscription_;
 };
 class LineSubscriber : public rclcpp::Node
 {
   public:
-    LineSubscriber()
-    : Node("line_subscriber")
-    {
-      subscription_ = this->create_subscription<odometry>(
-      "topic2", 10, std::bind(&LineSubscriber::topic_callback, this, _1));
-    }
+  MySubscriberNode() : Node("my_subscriber_node")
+  {
+    // Subscribe to the image_raw topic
+    image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
+        "/camera/image_raw",
+        10,  // Set the queue size
+        std::bind(&MySubscriberNode::imageCallback, this, std::placeholders::_1));
+
+    // Subscribe to the camera_info topic
+    camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
+        "/camera/camera_info",
+        10,  // Set the queue size
+        std::bind(&MySubscriberNode::cameraInfoCallback, this, std::placeholders::_1));
+  }
 
   private:
-    void topic_callback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
+    const Eigen::Matrix3d& cameraMatrix;
+    void cameraInfoCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
+    {
+        cameraMatrix = msg->k;
+        RCLCPP_INFO(this->get_logger(), "Received camera info message");
+    }
+    void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
     {   
         cv_bridge::CvImagePtr cv_ptr;
         cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
