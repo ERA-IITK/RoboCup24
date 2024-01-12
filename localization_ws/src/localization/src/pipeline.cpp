@@ -25,21 +25,19 @@
 
 using std::placeholders::_1;
 using namespace std;
-class odometry odom;
-odom.x = 0;
-odom.y = 0;
-odom.theta = 0;
+odometry odom;
 vector<Eigen::Vector3d> worldCoordinates;
 class OdometrySubscriber : public rclcpp::Node
 {
   public:
-    OdomSubscriberNode() : Node("odom_subscriber_node") {
+    OdometrySubscriber() : Node("odom_subscriber_node") {
     // Subscribe to the /odom topic
     subscription_ = create_subscription<nav_msgs::msg::Odometry>(
-        "/odom", 10, std::bind(&OdomSubscriberNode::odomCallback, this, std::placeholders::_1));
+        "/odom", 10, std::bind(&OdometrySubscriber::odomCallback, this, std::placeholders::_1));
   }
 
   private:
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
     // Callback function for /odom topic
     RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
@@ -58,8 +56,8 @@ class OdometrySubscriber : public rclcpp::Node
 
     // Do something with the yaw angle, e.g., print it
     RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
-    odom.x += msg->pose.position.pose.x;
-    odom.y += msg->pose.position.pose.y;
+    odom.x += msg->pose.pose.position.x;
+    odom.y += msg->pose.pose.position.y;
     odom.theta += yaw_degrees;
   }
 
@@ -76,23 +74,23 @@ class OdometrySubscriber : public rclcpp::Node
 class LineSubscriber : public rclcpp::Node
 {
   public:
-  MySubscriberNode() : Node("my_subscriber_node")
-  {
+    LineSubscriber() : Node("my_subscriber_node"){
     // Subscribe to the image_raw topic
     image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
         "/camera/image_raw",
         10,  // Set the queue size
-        std::bind(&MySubscriberNode::imageCallback, this, std::placeholders::_1));
+        std::bind(&LineSubscriber::imageCallback, this, std::placeholders::_1));
 
     // Subscribe to the camera_info topic
     camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
         "/camera/camera_info",
         10,  // Set the queue size
-        std::bind(&MySubscriberNode::cameraInfoCallback, this, std::placeholders::_1));
+        std::bind(&LineSubscriber::cameraInfoCallback, this, std::placeholders::_1));
   }
 
   private:
-    const Eigen::Matrix3d& cameraMatrix;
+    
+    Eigen::Matrix3d& cameraMatrix;
     void cameraInfoCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
     {
         cameraMatrix = msg->k;
@@ -266,8 +264,12 @@ int linedetection_thread(int argc, char * argv[])
   rclcpp::shutdown();
   return 0;
 }
+
 int main(int argc, char * argv[])
 {
+    odom.x = 0;
+    odom.y = 0;
+    odom.theta = 0;
     thread t1(odometry_thread, argc, argv);
     thread t2(localization_thread);
     thread t3(linedetection_thread, argc, argv);
