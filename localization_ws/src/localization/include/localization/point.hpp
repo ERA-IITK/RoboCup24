@@ -35,14 +35,3 @@ public:
     odometry(): x{0.0}, y{0.0}, theta{0.0} {}
     odometry(double _x, double _y, double _theta) : x(_x), y(_y), theta(_theta) {}
 };
-
-int main() {
-    odometry odom;
-    odom.x = 0;
-    odom.y = 0;
-    odom.theta = 0;
-
-    // Rest of your code...
-
-    return 0;
-}

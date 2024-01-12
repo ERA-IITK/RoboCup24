@@ -16,6 +16,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "sensor_msgs/image_encodings.hpp"
+#include "sensor_msgs/msg/image.hpp"
+#include "sensor_msgs/msg/camera_info.hpp"
 #include <Eigen/Core>
 #include "rclcpp/rclcpp.hpp"
 #include <cv_bridge/cv_bridge.h>
@@ -26,7 +28,7 @@
 using std::placeholders::_1;
 using namespace std;
 odometry odom;
-vector<Eigen::Vector3d> worldCoordinates;
+Eigen::Matrix<Eigen::Vector3d, Eigen::Dynamic, Eigen::Dynamic> worldCoordinates;
 class OdometrySubscriber : public rclcpp::Node
 {
   public:
@@ -61,17 +63,6 @@ class OdometrySubscriber : public rclcpp::Node
     odom.theta += yaw_degrees;
   }
 
-//   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
-//     void topic_callback(const odometry & msg) const
-//     {
-//         RCLCPP_INFO(this->get_logger(), "I heard: '%d %d %d'", msg.data.x, msg.data.y, msg.data.theta);
-//         odom.x += msg.data.x;
-//         odom.y += msg.data.y;
-//         odom.theta += msg.data.theta;
-//     }
-//     rclcpp::Subscription<odometry>::SharedPtr subscription_;
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
-
 };
 class LineSubscriber : public rclcpp::Node
 {
@@ -92,28 +83,38 @@ class LineSubscriber : public rclcpp::Node
 
   private:
     
-    Eigen::Matrix3d& cameraMatrix;
-    void cameraInfoCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
-    {
-        cameraMatrix = msg->k;
-        RCLCPP_INFO(this->get_logger(), "Received camera info message");
+    Eigen::Matrix3d cameraMatrix;
+
+    void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg) {
+        std::array<double, 9> arrayData = msg->k;
+        cameraMatrix(0, 0) = arrayData[0];
+        cameraMatrix(0, 1) = arrayData[1];
+        cameraMatrix(0, 2) = arrayData[2];
+        cameraMatrix(1, 0) = arrayData[3];
+        cameraMatrix(1, 1) = arrayData[4];
+        cameraMatrix(1, 2) = arrayData[5];
+        cameraMatrix(2, 0) = arrayData[6];
+        cameraMatrix(2, 1) = arrayData[7];
+        cameraMatrix(2, 2) = arrayData[8];
     }
     void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
     {   
         cv_bridge::CvImagePtr cv_ptr;
         cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
         auto contours=linedetection(cv_ptr->image);
-        auto depthMat;
-        for(int i=0;i<contours.size();i++)
-        {
-            worldCoordinates[i]=pixelTo3DPoint(cameraMatrix,contours[i],depthMat[contours[i].x][contours[i].y]);
+        auto depthMat = cv::Mat(cv_ptr->image.size(), CV_64F, cv::Scalar(0.0));
+        for (int i = 0; i < contours.size(); i++) {
+            for (int j = 0; j < contours[i].size(); j++) {
+                // Assuming you want the j-th point in the i-th contour
+                worldCoordinates[i][j] = pixelTo3DPoint(cameraMatrix, contours[i][j], depthMat[contours[i][j].x][contours[i][j].y]);
+            }
         }
+
     }
 
-    // Define a function to convert pixel coordinates and depth to 3D world coordinates
     Eigen::Vector3d pixelTo3DPoint(const Eigen::Matrix3d& cameraMatrix, const Eigen::Vector2d& pixelCoords, double depth) {
         Eigen::Vector3d pixelHomogeneous;
-        pixelHomogeneous << pixelCoords.x(), pixelCoords.y(), 1.0;
+        pixelHomogeneous << pixelCoords[0], pixelCoords[1], 1.0;
 
         Eigen::Vector3d worldCoordinates = cameraMatrix.inverse() * pixelHomogeneous;
         worldCoordinates *= depth;
@@ -125,7 +126,7 @@ class LineSubscriber : public rclcpp::Node
 void saveMatrixAsImage(const vector<WPoint> &rwlp)
 {
     string filename = "/home/legendarygene/Desktop/RoboCup24/map.png";
-    vector<vector<int>> matrix(220, vector<int>(140, 0));
+    vector<vector<int>> cameraMatrix(220, vector<int>(140, 0));
     vector<WPoint> temp_wlp(rwlp.size());
     vector<WPoint> temp_nlp(rwlp.size());
     for (int ii = 0; ii <= 219; ii += 10)
@@ -147,13 +148,13 @@ void saveMatrixAsImage(const vector<WPoint> &rwlp)
             }
             double val = costFunction(temp_nlp, temp_wlp);
             // cout << val << "\n";
-            matrix[ii][jj] = 255 - (int)(val * 255);
+            cameraMatrix[ii][jj] = 255 - (int)(val * 255);
         }
     }
     cv::Mat image(22, 14, CV_8UC1);
     for (int i = 0; i < 22; ++i)
         for (int j = 0; j < 14; ++j)
-            image.at<uchar>(i, j) = static_cast<uchar>(matrix[i][j]);
+            image.at<uchar>(i, j) = static_cast<uchar>(cameraMatrix[i][j]);
     cv::imwrite(filename, image);
     cout << "Saved CostMap in Parent Directory!\n";
 }
