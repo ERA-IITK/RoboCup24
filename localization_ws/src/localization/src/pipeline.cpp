@@ -70,6 +70,8 @@ class OdometrySubscriber : public rclcpp::Node
 //         odom.theta += msg.data.theta;
 //     }
 //     rclcpp::Subscription<odometry>::SharedPtr subscription_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
+
 };
 class LineSubscriber : public rclcpp::Node
 {
@@ -117,7 +119,8 @@ class LineSubscriber : public rclcpp::Node
         worldCoordinates *= depth;
         return worldCoordinates;
     }
-    rclcpp::Subscription<odometry>::SharedPtr subscription_;
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
+    rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
 };
 void saveMatrixAsImage(const vector<WPoint> &rwlp)
 {
