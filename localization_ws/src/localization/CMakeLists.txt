@@ -26,6 +26,7 @@ find_package(tf2_geometry_msgs REQUIRED)
 add_library(${LIBRARY_NAME}
   src/rndgeneration.cpp
   src/linepoints.cpp
+  src/linedetection.cpp
   src/realmap_location.cpp
   src/utilities.cpp
   src/gradient_descent.cpp
@@ -57,7 +58,7 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
   ${ament_INCLUDE_DIRS}
   ${cv_bridge_INCLUDE_DIRS}
   ${rcl_interfaces_INCLUDE_DIRS}
-  ${Eigen3_INCLUDE_DIRS}
+  Eigen3::Eigen
   ${nav_msgs_INCLUDE_DIRS}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
