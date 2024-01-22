@@ -72,7 +72,6 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
     }
 
     cout << "Grads " << gradient[0] << ", " << gradient[1] << ", " << gradient[2] << "\n";
-    gradient[2] *= 1000;
     return gradient;
 }
 

@@ -14,8 +14,8 @@ std::vector<std::vector<cv::Point>> linedetection(cv::Mat image) {
     // Create a mask to isolate green regions
     cv::Mat greenMask;
     cv::inRange(hsv, lowerGreen, upperGreen, greenMask);
-    cv::imshow("Green Mask", greenMask);
-    cv::waitKey(0);
+    // cv::imshow("Green Mask", greenMask);
+    // cv::waitKey(0);
 
     // Find contours in the common mask (common regions between green and white)
     std::vector<std::vector<cv::Point>> contours;
