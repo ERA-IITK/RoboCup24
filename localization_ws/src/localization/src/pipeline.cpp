@@ -25,6 +25,7 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "tf2/utils.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include <chrono>
 
 using std::placeholders::_1;
 using namespace std;
@@ -32,61 +33,67 @@ odometry odom;
 vector<Eigen::Vector3d> worldCoordinates;
 class OdometrySubscriber : public rclcpp::Node
 {
-  public:
-    OdometrySubscriber() : Node("odom_subscriber_node") {
-    // Subscribe to the /odom topic
-    subscription_ = create_subscription<nav_msgs::msg::Odometry>(
-        "/odom", 10, std::bind(&OdometrySubscriber::odomCallback, this, std::placeholders::_1));
-  }
+public:
+    OdometrySubscriber() : Node("odom_subscriber_node")
+    {
+        // Subscribe to the /odom topic
+        subscription_ = create_subscription<nav_msgs::msg::Odometry>(
+            "/odom", 10, std::bind(&OdometrySubscriber::odomCallback, this, std::placeholders::_1));
+    }
 
-  private:
+private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
-    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-    // Callback function for /odom topic
-    RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
+    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
+    {
+        std::chrono::seconds duration(1);
+        std::this_thread::sleep_for(duration);
+        // Callback function for /odom topic
+        RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
 
-    // Extract quaternion orientation from Odometry message
-    geometry_msgs::msg::Quaternion orientation_quaternion = msg->pose.pose.orientation;
+        // Extract quaternion orientation from Odometry message
+        geometry_msgs::msg::Quaternion orientation_quaternion = msg->pose.pose.orientation;
 
-    // Convert quaternion to Euler angles (roll, pitch, yaw)
-    tf2::Quaternion tf_quaternion;
-    tf2::fromMsg(orientation_quaternion, tf_quaternion);
-    tf2Scalar roll, pitch, yaw;
-    tf2::Matrix3x3(tf_quaternion).getRPY(roll, pitch, yaw);
+        // Convert quaternion to Euler angles (roll, pitch, yaw)
+        tf2::Quaternion tf_quaternion;
+        tf2::fromMsg(orientation_quaternion, tf_quaternion);
+        tf2Scalar roll, pitch, yaw;
+        tf2::Matrix3x3(tf_quaternion).getRPY(roll, pitch, yaw);
 
-    // Extract rotation around the y-axis (yaw)
-    double yaw_degrees = tf2::getYaw(orientation_quaternion) * 180.0 / M_PI;
+        // Extract rotation around the y-axis (yaw)
+        double yaw_degrees = tf2::getYaw(orientation_quaternion) * 180.0 / M_PI;
 
-    // Do something with the yaw angle, e.g., print it
-    RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
-    odom.x += msg->pose.pose.position.x;
-    odom.y += msg->pose.pose.position.y;
-    odom.theta += yaw_degrees;
-  }
-
+        // Do something with the yaw angle, e.g., print it
+        RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
+        odom.x += msg->pose.pose.position.x;
+        odom.y += msg->pose.pose.position.y;
+        odom.theta += yaw_degrees;
+    }
 };
 class LineSubscriber : public rclcpp::Node
 {
-  public:
-    LineSubscriber() : Node("my_subscriber_node"){
-    // Subscribe to the image_raw topic
-    image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
-        "/camera/image_raw",
-        10,  // Set the queue size
-        std::bind(&LineSubscriber::imageCallback, this, std::placeholders::_1));
+public:
+    LineSubscriber() : Node("my_subscriber_node")
+    {
+        // Subscribe to the image_raw topic
+        image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
+            "/camera/image_raw",
+            10, // Set the queue size
+            std::bind(&LineSubscriber::imageCallback, this, std::placeholders::_1));
 
-    // Subscribe to the camera_info topic
-    camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
-        "/camera/camera_info",
-        10,  // Set the queue size
-        std::bind(&LineSubscriber::cameraInfoCallback, this, std::placeholders::_1));
-  }
+        // Subscribe to the camera_info topic
+        camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
+            "/camera/camera_info",
+            10, // Set the queue size
+            std::bind(&LineSubscriber::cameraInfoCallback, this, std::placeholders::_1));
+    }
 
-  private:
-    
+private:
     Eigen::Matrix3d cameraMatrix;
 
-    void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg) {
+    void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg)
+    {
+        std::chrono::seconds duration(1);
+        std::this_thread::sleep_for(duration);
         std::array<double, 9> arrayData = msg->k;
         cameraMatrix(0, 0) = arrayData[0];
         cameraMatrix(0, 1) = arrayData[1];
@@ -98,13 +105,17 @@ class LineSubscriber : public rclcpp::Node
         cameraMatrix(2, 1) = arrayData[7];
         cameraMatrix(2, 2) = arrayData[8];
     }
-    void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg) const
-    {   
+    void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg) const
+    {
+        std::chrono::seconds duration(1);
+        std::this_thread::sleep_for(duration);
         cv_bridge::CvImagePtr cv_ptr;
         cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
-        auto contours=linedetection(cv_ptr->image);
-        for (const auto& contour : contours) {
-            for (const auto& point : contour) {
+        auto contours = linedetection(cv_ptr->image);
+        for (const auto &contour : contours)
+        {
+            for (const auto &point : contour)
+            {
                 // Convert image coordinates to homogeneous coordinates
                 Eigen::Vector3d homogeneousCoords(point.x, point.y, 1.0);
 
@@ -204,14 +215,20 @@ void localization_thread()
          { return lhs.cost < rhs.cost; });
 
     // pts.resize(100);
-    for (int i = 0; i < rndpts; i++)
+    // for (int i = 0; i < rndpts; i++)
+    // {
+    //     cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+    // }
+    odometry temp;
+    while (true)
     {
-        cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
-    }
-    int frames = 2;
-    while(frames--){
+        std::chrono::seconds duration(1);
+        std::this_thread::sleep_for(duration);
+        cout<<odom.x<<" "<<odom.y<<" "<<odom.theta<<"\n";
+        temp.x = odom.x - temp.x;
+        temp.y = odom.y - temp.y;
+        temp.theta = odom.theta - temp.theta;
         update_odom(pts, odom);
-        odom.x = 0, odom.y = 0, odom.theta = 0;
         inc_age(pts);
         addscore(pts);
         del_nodes(pts);
@@ -240,33 +257,33 @@ void localization_thread()
         }
 
         sort(pts.begin(), pts.end(), [](const Point &lhs, const Point &rhs)
-            { return lhs.cost < rhs.cost; });
+             { return lhs.cost < rhs.cost; });
 
         // pts.resize(100);
-        for (int i = 0; i < rndpts; i++)
-        {
-            cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
-        }
+        // for (int i = 0; i < rndpts; i++)
+        // {
+        //     cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+        // }
     }
 }
 
-int odometry_thread(int argc, char * argv[])
+int odometry_thread(int argc, char *argv[])
 {
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<OdometrySubscriber>());
-  rclcpp::shutdown();
-  return 0;
-}
-int linedetection_thread(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<LineSubscriber>());
-  rclcpp::shutdown();
-  return 0;
+    rclcpp::spin(std::make_shared<OdometrySubscriber>());
+    rclcpp::shutdown();
+    return 0;
 }
 
-int main(int argc, char * argv[])
+int linedetection_thread(int argc, char *argv[])
 {
+    rclcpp::spin(std::make_shared<LineSubscriber>());
+    rclcpp::shutdown();
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    rclcpp::init(argc, argv);
     odom.x = 0;
     odom.y = 0;
     odom.theta = 0;
@@ -278,5 +295,3 @@ int main(int argc, char * argv[])
     t3.join();
     return 0;
 }
-
-
