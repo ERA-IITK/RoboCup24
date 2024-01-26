@@ -120,7 +120,7 @@ private:
                 Eigen::Vector3d worldCoords = cameraMatrix.inverse() * homogeneousCoords;
 
                 // Store the result
-                float beta = 0.18;
+                float beta = 1.3907;
                 Eigen::Matrix3d rotationMatrix;
                 rotationMatrix << cos(beta), 0, sin(beta), 0, 1, 0, -sin(beta), 0, cos(beta);
                 worldCoords = rotationMatrix * worldCoords;
@@ -225,8 +225,8 @@ void localization_thread()
             for (int j = 0; j < tempWorldCoordinates.size(); j++)
             {
                 // get_projection(raw_wlp[j].depth, raw_wlp[j].x_angle, raw_wlp[j].y_angle, pts[i].rwlp[j].x, pts[i].rwlp[j].y);
-                pts[i].rwlp[j].x = tempWorldCoordinates[j].x();
-                pts[i].rwlp[j].y = tempWorldCoordinates[j].y();
+                pts[i].rwlp[j].x = tempWorldCoordinates[j].y();
+                pts[i].rwlp[j].y = tempWorldCoordinates[j].x();
             }
         }
         tempWorldCoordinates.clear();
@@ -239,6 +239,11 @@ void localization_thread()
         sort(pts.begin(), pts.end(), [](const Point &lhs, const Point &rhs)
              { return lhs.cost < rhs.cost; });
 
+        for (int i = 0; i < 5; i++)
+        {
+            cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+            cout<<"Point "<<i<<" "<<pts[i].cost<<"\n";
+        }
         // pts.resize(100);
     //     if(k==40){
     //         k=0;
@@ -251,14 +256,14 @@ void localization_thread()
     }
 }
 
-int odometry_thread(int argc, char *argv[])
+int odometry_thread()
 {
     rclcpp::spin(std::make_shared<OdometrySubscriber>());
     rclcpp::shutdown();
     return 0;
 }
 
-int linedetection_thread(int argc, char *argv[])
+int linedetection_thread()
 {
     rclcpp::spin(std::make_shared<LineSubscriber>());
     rclcpp::shutdown();
@@ -271,8 +276,8 @@ int main(int argc, char *argv[])
     odom.x = 0;
     odom.y = 0;
     odom.theta = 0;
-    thread t1(odometry_thread, argc, argv);
-    thread t3(linedetection_thread, argc, argv);
+    thread t1(odometry_thread);
+    thread t3(linedetection_thread);
     thread t2(localization_thread);
     t1.join();
     t3.join();

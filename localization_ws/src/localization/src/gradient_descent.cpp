@@ -100,10 +100,10 @@ void gradient_descent(Point &p)
     for (int iteration = 0; iteration < numIterations; ++iteration)
     {
         updateLinePoints(p);
-        if (iteration == 0)
-            cout << "Initial Cost " << costFunction(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
-        else
-            cout << "Iteration " << iteration << ": SqErr = " << squareError(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
+        // if (iteration == 0)
+        //     cout << "Initial Cost " << costFunction(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
+        // else
+        //     cout << "Iteration " << iteration << ": SqErr = " << squareError(p.nlp, p.wlp) << " (" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
 
         vector<double> gradients = computeGradients(parameters, p.nlp, p.wlp, p.rwlp);
         adamGradientDescent(parameters, gradients, m, v, iteration + 1, learningRate, beta1, beta2);
@@ -115,8 +115,8 @@ void gradient_descent(Point &p)
     }
 
     updateLinePoints(p);
-    cout << "Iteration " << numIterations << ": SqErr = " << squareError(p.nlp, p.wlp) << endl;
-    cout << "(" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
-    cout << "Final Cost " << costFunction(p.nlp, p.wlp) << endl;
-    cout << endl;
+    // cout << "Iteration " << numIterations << ": SqErr = " << squareError(p.nlp, p.wlp) << endl;
+    // cout << "(" << p.x << ", " << p.y << ", " << p.theta << ")" << endl;
+    // cout << "Final Cost " << costFunction(p.nlp, p.wlp) << endl;
+    // cout << endl;
 }
