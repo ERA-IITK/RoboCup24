@@ -75,6 +75,9 @@ public:
     LineSubscriber() : Node("my_subscriber_node")
     {
         // Subscribe to the image_raw topic
+        points_subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+            "camera/points", 10, std::bind(&PointCloudListener::points_callback, this, std::placeholders::_1));
+
         image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
             "/camera/image_raw",
             10, // Set the queue size
@@ -85,6 +88,7 @@ public:
             "/camera/camera_info",
             10, // Set the queue size
             std::bind(&LineSubscriber::cameraInfoCallback, this, std::placeholders::_1));
+            
     }
 
 private:
@@ -103,6 +107,20 @@ private:
         cameraMatrix(2, 0) = arrayData[6];
         cameraMatrix(2, 1) = arrayData[7];
         cameraMatrix(2, 2) = arrayData[8];
+    }
+    void points_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
+    {
+        // Process point cloud data here
+        sensor_msgs::PointCloud2ConstIterator<float> iter_x(*msg, "x");
+        sensor_msgs::PointCloud2ConstIterator<float> iter_y(*msg, "y");
+        sensor_msgs::PointCloud2ConstIterator<float> iter_z(*msg, "z");
+
+        for (; iter_x != iter_x.end(); ++iter_x, ++iter_y, ++iter_z)
+        {
+        float x = *iter_x;
+        float y = *iter_y;
+        float z = *iter_z;
+        }
     }
     void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg) const
     {
@@ -136,6 +154,7 @@ private:
         }
         worldCoordinates.clear();
     }
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr points_subscription_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
     rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
 };
