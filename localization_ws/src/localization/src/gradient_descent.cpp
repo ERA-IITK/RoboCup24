@@ -71,7 +71,7 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
         gradient[2] += 2 * constant * ((estimatedLinePoints[i].x - givenLinePoints[i].x) * (-1 * rel_estimatedLinePoints[i].x * sin(theta) + -1 * rel_estimatedLinePoints[i].y * cos(theta)) + (estimatedLinePoints[i].y - givenLinePoints[i].y) * (rel_estimatedLinePoints[i].x * cos(theta) - rel_estimatedLinePoints[i].y * sin(theta)));
     }
 
-    cout << "Grads " << gradient[0] << ", " << gradient[1] << ", " << gradient[2] << "\n";
+    // cout << "Grads " << gradient[0] << ", " << gradient[1] << ", " << gradient[2] << "\n";
     return gradient;
 }
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <cmath>
 #include <algorithm>
 #include "localization/raw_points.hpp"
@@ -31,6 +32,7 @@ using std::placeholders::_1;
 using namespace std;
 odometry odom;
 vector<Eigen::Vector3d> worldCoordinates;
+deque<vector<Eigen::Vector3d>> worldCoordinatesDeque;
 class OdometrySubscriber : public rclcpp::Node
 {
 public:
@@ -45,10 +47,8 @@ private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
     {
-        std::chrono::seconds duration(10);
-        std::this_thread::sleep_for(duration);
         // Callback function for /odom topic
-        RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
+        // RCLCPP_INFO(get_logger(), "I heard : '%f %f'", msg->pose.pose.position.x, msg->pose.pose.position.y);
 
         // Extract quaternion orientation from Odometry message
         geometry_msgs::msg::Quaternion orientation_quaternion = msg->pose.pose.orientation;
@@ -63,7 +63,7 @@ private:
         double yaw_degrees = tf2::getYaw(orientation_quaternion) * 180.0 / M_PI;
 
         // Do something with the yaw angle, e.g., print it
-        RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
+        // RCLCPP_INFO(rclcpp::get_logger("odom_listener"), "Yaw angle with respect to y-axis: %f degrees", yaw_degrees);
         odom.x = msg->pose.pose.position.x;
         odom.y = msg->pose.pose.position.y;
         odom.theta = yaw_degrees;
@@ -92,10 +92,8 @@ private:
 
     void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg)
     {
-        std::chrono::seconds duration(10);
-        std::this_thread::sleep_for(duration);
         std::array<double, 9> arrayData = msg->k;
-        RCLCPP_INFO(get_logger(), "I heard : '%f %f'", arrayData[0], arrayData[1]);
+        // RCLCPP_INFO(get_logger(), "I heard : '%f %f'", arrayData[0], arrayData[1]);
         cameraMatrix(0, 0) = arrayData[0];
         cameraMatrix(0, 1) = arrayData[1];
         cameraMatrix(0, 2) = arrayData[2];
@@ -108,8 +106,6 @@ private:
     }
     void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg) const
     {
-        std::chrono::seconds duration(10);
-        std::this_thread::sleep_for(duration);
         cv_bridge::CvImagePtr cv_ptr;
         cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
         auto contours = linedetection(cv_ptr->image);
@@ -127,6 +123,14 @@ private:
                 worldCoordinates.push_back(worldCoords);
             }
         }
+        if(worldCoordinatesDeque.size()<10){
+            worldCoordinatesDeque.push_back(worldCoordinates);
+        }
+        else{
+            worldCoordinatesDeque.pop_front();
+            worldCoordinatesDeque.push_back(worldCoordinates);
+        }
+        worldCoordinates.clear();
     }
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
     rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
@@ -185,48 +189,14 @@ void localization_thread()
 
     vector<Point> pts = rndgen(rndpts);
 
-    // Point act;
-    // act.x = 9.1, act.y = 7.7, act.theta = 0;
-    // pts.push_back(act);
-
-    for (int i = 0; i < rndpts; i++)
-    {
-        // pts[i].rwlp.resize(raw_wlp.size());
-        // pts[i].wlp.resize(raw_wlp.size());
-        // pts[i].nlp.resize(raw_wlp.size());
-
-        pts[i].rwlp.resize(worldCoordinates.size());
-        pts[i].wlp.resize(worldCoordinates.size());
-        pts[i].nlp.resize(worldCoordinates.size());
-
-        for (int j = 0; j < worldCoordinates.size(); j++)
-        {
-            // get_projection(raw_wlp[j].depth, raw_wlp[j].x_angle, raw_wlp[j].y_angle, pts[i].rwlp[j].x, pts[i].rwlp[j].y);
-            pts[i].rwlp[j].x = worldCoordinates[j].x();
-            pts[i].rwlp[j].y = worldCoordinates[j].y();
-        }
-    }
-
-    for (int i = 0; i < rndpts; i++)
-    {
-        gradient_descent(pts[i]);
-    }
-
-    sort(pts.begin(), pts.end(), [](const Point &lhs, const Point &rhs)
-         { return lhs.cost < rhs.cost; });
-
-    // pts.resize(100);
-    // for (int i = 0; i < rndpts; i++)
-    // {
-    //     cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
-    // }
     odometry temp;
     temp.x = 0, temp.y = 0, temp.theta = 0;
+    int k=0;
     while (true)
     {
-        std::chrono::seconds duration(10);
-        std::this_thread::sleep_for(duration);
-        cout<<odom.x<<" "<<odom.y<<" "<<odom.theta<<"\n";
+        k++;
+        vector<Eigen::Vector3d> tempWorldCoordinates=worldCoordinatesDeque.front();
+        // cout<<odom.x<<" "<<odom.y<<" "<<odom.theta<<"\n";
         temp.x = odom.x - temp.x;
         temp.y = odom.y - temp.y;
         temp.theta = odom.theta - temp.theta;
@@ -244,20 +214,21 @@ void localization_thread()
             // pts[i].wlp.resize(raw_wlp.size());
             // pts[i].nlp.resize(raw_wlp.size());
 
-            pts[i].rwlp.resize(worldCoordinates.size());
-            pts[i].wlp.resize(worldCoordinates.size());
-            pts[i].nlp.resize(worldCoordinates.size());
+            pts[i].rwlp.resize(tempWorldCoordinates.size());
+            pts[i].wlp.resize(tempWorldCoordinates.size());
+            pts[i].nlp.resize(tempWorldCoordinates.size());
 
-            for (int j = 0; j < worldCoordinates.size(); j++)
+            for (int j = 0; j < tempWorldCoordinates.size(); j++)
             {
                 // get_projection(raw_wlp[j].depth, raw_wlp[j].x_angle, raw_wlp[j].y_angle, pts[i].rwlp[j].x, pts[i].rwlp[j].y);
-                pts[i].rwlp[j].x = worldCoordinates[j].x();
-                pts[i].rwlp[j].y = worldCoordinates[j].y();
+                pts[i].rwlp[j].x = tempWorldCoordinates[j].x();
+                pts[i].rwlp[j].y = tempWorldCoordinates[j].y();
             }
         }
-
+        tempWorldCoordinates.clear();
         for (int i = 0; i < rndpts; i++)
         {
+            // cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
             gradient_descent(pts[i]);
         }
 
@@ -265,10 +236,14 @@ void localization_thread()
              { return lhs.cost < rhs.cost; });
 
         // pts.resize(100);
-        for (int i = 0; i < 5; i++)
-        {
-            cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
-        }
+    //     if(k==40){
+    //         k=0;
+    //         for (int i = 0; i < 5; i++)
+    //         {
+    //             cout << pts[i].x << " " << pts[i].y << " " << pts[i].theta << "\n";
+    //             cout<<"Point "<<i<<" "<<pts[i].cost<<"\n";
+    //         }
+    //     }
     }
 }
 
