@@ -120,6 +120,10 @@ private:
                 Eigen::Vector3d worldCoords = cameraMatrix.inverse() * homogeneousCoords;
 
                 // Store the result
+                float beta = 0.18;
+                Eigen::Matrix3d rotationMatrix;
+                rotationMatrix << cos(beta), 0, sin(beta), 0, 1, 0, -sin(beta), 0, cos(beta);
+                worldCoords = rotationMatrix * worldCoords;
                 worldCoordinates.push_back(worldCoords);
             }
         }
