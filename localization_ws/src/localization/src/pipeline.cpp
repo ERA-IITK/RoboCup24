@@ -77,13 +77,16 @@ public:
     LineSubscriber() : Node("my_subscriber_node")
     {
         // Subscribe to the image_raw topic
-        points_subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "camera/points", 10, std::bind(&LineSubscriber::points_callback, this, std::placeholders::_1));
+        // points_subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+        //     "camera/points", 10, std::bind(&LineSubscriber::points_callback, this, std::placeholders::_1));
 
         image_subscriber_ = create_subscription<sensor_msgs::msg::Image>(
             "/camera/image_raw",
             10, // Set the queue size
             std::bind(&LineSubscriber::imageCallback, this, std::placeholders::_1));
+
+        subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
+        "depth/image_raw", 10, std::bind(&LineSubscriber::depth_callback, this, std::placeholders::_1));
 
         // Subscribe to the camera_info topic
         camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
@@ -95,6 +98,7 @@ public:
 
 private:
     Eigen::Matrix3d cameraMatrix;
+    std::vector<std::vector<cv::Point>> contours;
 
     void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg)
     {
@@ -110,31 +114,45 @@ private:
         cameraMatrix(2, 1) = arrayData[7];
         cameraMatrix(2, 2) = arrayData[8];
     }
-    void points_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
-    {
-        // Process point cloud data here
-        sensor_msgs::PointCloud2ConstIterator<float> iter_x(*msg, "x");
-        sensor_msgs::PointCloud2ConstIterator<float> iter_y(*msg, "y");
-        sensor_msgs::PointCloud2ConstIterator<float> iter_z(*msg, "z");
+    // void points_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
+    // {
+    //     // Process point cloud data here
+    //     sensor_msgs::PointCloud2ConstIterator<float> iter_x(*msg, "x");
+    //     sensor_msgs::PointCloud2ConstIterator<float> iter_y(*msg, "y");
+    //     sensor_msgs::PointCloud2ConstIterator<float> iter_z(*msg, "z");
 
-        for (; iter_x != iter_x.end(); ++iter_x, ++iter_y, ++iter_z)
-        {
-        float x = *iter_x;
-        float y = *iter_y;
-        float z = *iter_z;
-        }
-    }
-    void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg) const
+    //     for (; iter_x != iter_x.end(); ++iter_x, ++iter_y, ++iter_z)
+    //     {
+    //     float x = *iter_x;
+    //     float y = *iter_y;
+    //     float z = *iter_z;
+    //     }
+    // }
+
+    void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg)
     {
         cv_bridge::CvImagePtr cv_ptr;
         cv_ptr = cv_bridge::toCvCopy(msg, msg->encoding);
-        auto contours = linedetection(cv_ptr->image);
+        contours = linedetection(cv_ptr->image);
+    }
+
+    void depth_callback(const sensor_msgs::msg::Image::SharedPtr msg)
+    {
+        // Assuming depth data is represented in float32 format
+        const float* depth_data = reinterpret_cast<const float*>(msg->data.data());
+
+        // Assuming width and height of the image
+        int width = msg->width;
+        int height = msg->height;
+
+        // Process depth data (e.g., access specific depth values)
         for (const auto &contour : contours)
         {
             for (const auto &point : contour)
             {
                 // Convert image coordinates to homogeneous coordinates
-                Eigen::Vector3d homogeneousCoords(point.x, point.y, 1.0);
+                float depth_value = depth_data[point.y * width + point.x];
+                Eigen::Vector3d homogeneousCoords(point.x, point.y, depth_value);
 
                 // Use the inverse of the intrinsic matrix to convert to real-world coordinates
                 Eigen::Vector3d worldCoords = cameraMatrix.inverse() * homogeneousCoords;
@@ -156,7 +174,9 @@ private:
         }
         worldCoordinates.clear();
     }
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr points_subscription_;
+
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
+    //rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr points_subscription_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
     rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
 };

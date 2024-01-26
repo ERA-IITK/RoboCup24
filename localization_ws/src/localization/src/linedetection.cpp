@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-std::vector<std::vector<cv::Point>> linedetection(cv::Mat image) {
+std::vector<std::vector<cv::Point>> linedetection(const cv::Mat image) {
 
     // Convert the image to HSV color space
     cv::Mat hsv;
