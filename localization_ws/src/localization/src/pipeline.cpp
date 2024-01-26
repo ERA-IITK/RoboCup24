@@ -86,7 +86,7 @@ public:
             std::bind(&LineSubscriber::imageCallback, this, std::placeholders::_1));
 
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-        "depth/image_raw", 10, std::bind(&LineSubscriber::depth_callback, this, std::placeholders::_1));
+        "/camera/depth/image_raw", 10, std::bind(&LineSubscriber::depth_callback, this, std::placeholders::_1));
 
         // Subscribe to the camera_info topic
         camera_info_subscriber_ = create_subscription<sensor_msgs::msg::CameraInfo>(
@@ -152,6 +152,7 @@ private:
             {
                 // Convert image coordinates to homogeneous coordinates
                 float depth_value = depth_data[point.y * width + point.x];
+                // cout<<depth_value<<"\n";
                 Eigen::Vector3d homogeneousCoords(point.x, point.y, depth_value);
 
                 // Use the inverse of the intrinsic matrix to convert to real-world coordinates
