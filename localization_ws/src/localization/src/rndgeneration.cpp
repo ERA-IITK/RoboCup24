@@ -11,8 +11,10 @@ vector<Point> rndgen(int num_points) {
     random_device rd;
     mt19937 gen(rd());
 
-    uniform_real_distribution<double> x_dist(1.0, 15.0);
-    uniform_real_distribution<double> y_dist(1.0, 23.0);
+    // uniform_real_distribution<double> x_dist(1.0, 15.0);
+    // uniform_real_distribution<double> y_dist(1.0, 23.0);
+    uniform_real_distribution<double> x_dist(1.0, 23.0);
+    uniform_real_distribution<double> y_dist(1.0, 15.0);
     uniform_real_distribution<double> theta_dist(0.0, 360.0);
 
     vector<Point> random_points;

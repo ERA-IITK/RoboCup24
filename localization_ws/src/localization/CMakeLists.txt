@@ -29,7 +29,8 @@ add_library(${LIBRARY_NAME}
   src/linedetection.cpp
   src/realmap_location.cpp
   src/utilities.cpp
-  src/gradient_descent.cpp
+  src/LevenbergMarquardt.cpp
+  #src/gradient_descent.cpp
 )
 add_executable(pipeline src/pipeline.cpp)
 
@@ -95,4 +96,3 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
-

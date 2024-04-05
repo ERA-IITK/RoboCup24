@@ -77,17 +77,24 @@ vector<double> computeGradients(const vector<double> &parameters, const vector<W
 
 void updateLinePoints(Point &p)
 {
+    p.x = max(1.01, p.x);
+    p.x = min(22.99, p.x);
+    p.y = max(1.01, p.y);
+    p.y = min(14.99, p.y);
+    p.theta = ((int)p.theta)%360;
+
     for (int i = 0; i < (int)p.rwlp.size(); i++)
     {
         realmap_loc(p.wlp[i].x, p.wlp[i].y, p.rwlp[i].x, p.rwlp[i].y, p.x, p.y, p.theta);
-        WPoint temp(temp.x = p.wlp[i].x, temp.y = p.wlp[i].y);
-        temp.x = max(1.01, p.wlp[i].x);
-        temp.x = min(14.99, temp.x);
-        temp.y = max(1.01, p.wlp[i].y);
-        temp.y = min(22.99, temp.y);
+        WPoint temp;
+        temp.y = min(max(1.01, p.wlp[i].x), 22.99);
+        temp.x =16.0-(min(max(1.01, p.wlp[i].y), 14.99));
+        // cout << temp.x << ", " << temp.y << " temp\n";
         linepoint lp = findNearestPoint(temp);
-        p.nlp[i].x = lp.x;
-        p.nlp[i].y = lp.y;
+        // cout << lp.x << ", " << lp.y << " fnp\n";
+        p.nlp[i].y = 16.0 - lp.x;
+        p.nlp[i].x = lp.y;
+        // cout << p.wlp[i].x << ", " << p.wlp[i].y << " is " << p.nlp[i].x << ", " << p.nlp[i].y << "\n";
     }
 }
 
