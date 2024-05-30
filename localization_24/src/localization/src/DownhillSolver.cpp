@@ -3,7 +3,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "localization/point.hpp"
-#include "localization/linepoints.hpp"
+#include "localization/linepoints_ambition.hpp"
 #include "localization/linepoint.hpp"
 #include "localization/realmap_location.hpp"
 using namespace std;

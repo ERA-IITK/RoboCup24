@@ -6,11 +6,11 @@
 #include <algorithm>
 #include "localization/raw_points.hpp"
 #include "localization/point.hpp"
-#include "localization/linepoints.hpp"
+#include "localization/linepoints_ambition.hpp"//ambition
 #include "localization/realmap_location.hpp"
 #include "localization/utilities.hpp"
-#include "localization/rndgeneration.hpp"
-#include "localization/gradient_descent.hpp"
+#include "localization/rndgeneration_ambition.hpp"//ambition
+#include "localization/gradient_descent_ambition.hpp"//ambition
 #include <opencv2/opencv.hpp>
 #include "localization/linedetection.hpp"
 //#include "localization/LevenbergMarquardt.hpp"
@@ -219,7 +219,7 @@ void localization_thread()
     odometry temp;
     temp.x = 0, temp.y = 0, temp.theta = 0;
     int k = 0;
-    std::string imagePath = "/home/noble_pegasus/RoboCup24/localization_ws/src/localization/images/robocup_field.png";
+    std::string imagePath = "/home/vihaan/Documents/RoboCup24/localization_ws/src/localization/images/robocup_field_ambition.png";
     cv::namedWindow("Image with Points", cv::WINDOW_NORMAL);
 
     while (true)
@@ -297,7 +297,7 @@ int linedetection_thread()
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    myfile.open("/home/noble_pegasus/RoboCup24/localization_ws/src/localization/CamTest.txt");
+    myfile.open("/home/vihaan/Documents/RoboCup24/localization_ws/src/localization/CamTest.txt");
     odom.x = 0;
     odom.y = 0;
     odom.theta = 0;

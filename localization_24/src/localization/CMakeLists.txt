@@ -25,8 +25,11 @@ find_package(tf2_ros REQUIRED) # Added tf2_ros for TF2 functionality
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 add_library(${LIBRARY_NAME}
-  src/rndgeneration.cpp
-  src/linepoints.cpp
+  src/rndgeneration_ambition.cpp#ambition
+  src/linepoints_ambition.cpp#ambition
+  src/gradient_descent_ambition.cpp
+  # src/rndgeneration.cpp
+  # src/linepoints.cpp
   src/linedetection.cpp
   src/realmap_location.cpp
   src/utilities.cpp
